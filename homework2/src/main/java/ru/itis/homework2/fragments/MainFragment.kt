@@ -35,14 +35,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         initRecyclerView(requestManager = glide)
 
         with(binding) {
-            this?.btnList?.setOnClickListener{
-                recyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-            }
-            this?.btnNet?.setOnClickListener{
-                recyclerView.layoutManager = GridLayoutManager(requireContext(),2,  RecyclerView.VERTICAL, false)
-                //val layoutManager = GridLayoutManager(requireContext(),3,  RecyclerView.VERTICAL, false)
-            }
-
             this!!.floatingActionButton.show()
             this.floatingActionButton.setOnClickListener{
                 BottomSheetFragment().show(parentFragmentManager, "BottomSheetFragment")
@@ -98,9 +90,16 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         rvAdapter = ListContentAdapter(
             contextManager = requestManager,
-            action = ::onItemClick,
+            action1 = { position ->
+                handleButtonClick(position)
+            },
+            action2 = { position ->
+                onItemClick(position)
+            },
             items = currentDataList
         )
+
+
 
         binding?.recyclerView?.apply {
             val layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
@@ -112,14 +111,15 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
 
     private fun onItemClick(position: Int) {
+        if (position == 0) return
         val dataList = rvAdapter?.getDataList()
 
         val detailFragment = DetailFragment().apply {
             arguments = dataList?.get(position)?.let {
                 DetailFragment.bundle(
                     title = it.title,
-                    description = dataList[position].description,
-                    imageUrl = dataList[position].imageUrl
+                    description = dataList[position - 1].description,
+                    imageUrl = dataList[position - 1].imageUrl
                 )
             }
         }
@@ -129,6 +129,22 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             .addToBackStack(null) //чтобы можно было вернуться назад
             .commit()
     }
+
+    private fun handleButtonClick(position: Int) {
+        when (position) {
+            0 -> binding?.recyclerView?.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+            1 -> binding?.recyclerView?.layoutManager = GridLayoutManager(context, 2, RecyclerView.VERTICAL, false).apply {
+                spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                    override fun getSpanSize(position: Int): Int {
+                        return if (position == 0) 2
+                        else 1
+                    }
+                }
+            }
+        }
+
+    }
+
 
 
     fun getListItems(count: Int): List<ListPictureItemModel>{

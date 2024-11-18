@@ -10,8 +10,6 @@
     app:cardCornerRadius="16sp"
     app:cardElevation="8dp">
 
-    <!--    Эффект нажатия - ripple effect, для материал кардвью он уже реализован -->
-    <!--    android:foreground="?selectableItemBackground"-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
