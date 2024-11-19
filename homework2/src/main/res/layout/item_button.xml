@@ -15,12 +15,21 @@
         android:textColor="@color/white"
         android:text="Список" />
     <Button
-        android:id="@+id/btn_net"
+        android:id="@+id/btn_grid"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="@color/white"
         android:backgroundTint="@color/item"
-        android:text="Сетка" />
+        android:text="Сетка 1" />
+
+    <Button
+        android:id="@+id/btn_grid_vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/item"
+        android:text="Сетка 2" />
 
 </LinearLayout>

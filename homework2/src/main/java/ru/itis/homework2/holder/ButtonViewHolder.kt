@@ -11,7 +11,8 @@ class ButtonViewHolder(
 
     fun bindItem() {
         viewBinding.btnList.setOnClickListener { action(0) }
-        viewBinding.btnNet.setOnClickListener { action(1) }
+        viewBinding.btnGrid.setOnClickListener { action(1) }
+        viewBinding.btnGridVertical.setOnClickListener { action(2) }
     }
 
 }

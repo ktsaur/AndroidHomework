@@ -19,7 +19,7 @@ class ListContentViewHolder(
             }
         }
 
-        fun bindItem(itemData: ListPictureItemModel, count: Int) {
+        fun bindItem(itemData: ListPictureItemModel) {
             viewBinding.tvDesc.text = itemData.title
 
             requestManager.load(itemData.imageUrl)

@@ -16,6 +16,7 @@ import ru.itis.homework2.models.ListPictureItemModel
 import ru.itis.homework2.repositories.ContentRepository
 import ru.itis.homework2.repositories.Dataset
 import ru.itis.homework2.utils.ActionType
+import ru.itis.homework2.utils.DisplayType
 import kotlin.random.Random
 
 
@@ -26,6 +27,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private var rvAdapter: ListContentAdapter? = null
 
     private val currentDataList = mutableListOf<ListPictureItemModel>()
+
+    private var currentDisplayType = DisplayType.LIST
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -99,8 +102,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             items = currentDataList
         )
 
-
-
         binding?.recyclerView?.apply {
             val layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
             this.layoutManager = layoutManager
@@ -132,16 +133,33 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private fun handleButtonClick(position: Int) {
         when (position) {
-            0 -> binding?.recyclerView?.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-            1 -> binding?.recyclerView?.layoutManager = GridLayoutManager(context, 2, RecyclerView.VERTICAL, false).apply {
-                spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                    override fun getSpanSize(position: Int): Int {
-                        return if (position == 0) 2
-                        else 1
+            0 -> {
+                currentDisplayType = DisplayType.LIST
+                binding?.recyclerView?.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+            }
+            1 -> {
+                currentDisplayType = DisplayType.GRID
+                binding?.recyclerView?.layoutManager = GridLayoutManager(context, 2, RecyclerView.VERTICAL, false).apply {
+                    spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                        override fun getSpanSize(position: Int): Int {
+                            return if (position == 0) 2
+                            else 1
+                        }
+                    }
+                }
+            }
+            2 -> {
+                currentDisplayType = DisplayType.VERTICAL_GRID
+                binding?.recyclerView?.layoutManager = GridLayoutManager(context, 2, RecyclerView.VERTICAL, false).apply {
+                    spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                        override fun getSpanSize(position: Int): Int {
+                            return if (position == 0 || (position - 1) % 4 in listOf(0, 3)) 2 else 1
+                        }
                     }
                 }
             }
         }
+        rvAdapter?.notifyDataSetChanged()
 
     }
 
