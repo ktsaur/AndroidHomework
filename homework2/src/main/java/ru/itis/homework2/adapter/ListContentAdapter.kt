@@ -6,11 +6,13 @@ import com.bumptech.glide.RequestManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.itis.homework2.R
 import ru.itis.homework2.databinding.ItemButtonBinding
+import ru.itis.homework2.databinding.ItemGridBinding
 import ru.itis.homework2.databinding.ItemHolderFirstTypeBinding
 import ru.itis.homework2.databinding.ItemHolderSecondTypeBinding
 import ru.itis.homework2.databinding.ItemListBinding
 import ru.itis.homework2.holder.ButtonViewHolder
 import ru.itis.homework2.holder.FirstTypeViewHolder
+import ru.itis.homework2.holder.GridContentViewHolder
 import ru.itis.homework2.holder.ListContentViewHolder
 import ru.itis.homework2.holder.SecondTypeViewHolder
 import ru.itis.homework2.models.ListPictureItemModel
@@ -25,7 +27,7 @@ class ListContentAdapter(
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val dataList = mutableListOf<ListPictureItemModel>()
-    private val currentDisplayType: DisplayType = DisplayType.LIST
+    private var currentDisplayType: DisplayType = DisplayType.LIST
 
     init{
         dataList.addAll(items)
@@ -49,12 +51,21 @@ class ListContentAdapter(
                 )
             }
 
+            R.layout.item_grid -> {
+                val viewBinding = ItemGridBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                GridContentViewHolder (
+                    viewBinding = viewBinding,
+                    requestManager = contextManager,
+                    action = action2
+                )
+            }
+
             R.layout.item_holder_first_type -> {
                 val viewBinding = ItemHolderFirstTypeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 FirstTypeViewHolder(
                     viewBinding = viewBinding,
                     requestManager = contextManager,
-                    action = action1
+                    action = action2
                 )
             }
 
@@ -63,7 +74,7 @@ class ListContentAdapter(
                 SecondTypeViewHolder(
                     viewBinding = viewBinding,
                     requestManager = contextManager,
-                    action = action1
+                    action = action2
                 )
             }
 
@@ -75,6 +86,8 @@ class ListContentAdapter(
         if (holder is ButtonViewHolder) {
             holder.bindItem()
         } else if (holder is ListContentViewHolder) {
+            holder.bindItem(itemData = dataList[position - 1])
+        } else if (holder is GridContentViewHolder) {
             holder.bindItem(itemData = dataList[position - 1])
         } else if (holder is FirstTypeViewHolder) {
             holder.bindItem(itemData = dataList[position - 1])
@@ -91,7 +104,7 @@ class ListContentAdapter(
 
         return when(currentDisplayType) {
             DisplayType.LIST -> R.layout.item_list
-            DisplayType.GRID -> R.layout.item_list
+            DisplayType.GRID -> R.layout.item_grid
             DisplayType.VERTICAL_GRID -> {
                 val indexPosition = (position - 1) % 4
                 if (indexPosition == 0 || indexPosition == 3) {
@@ -111,6 +124,11 @@ class ListContentAdapter(
 
     fun getDataList(): List<ListPictureItemModel> {
         return dataList
+    }
+
+    fun updateDisplayType(newDisplayType: DisplayType) {
+        currentDisplayType = newDisplayType
+        notifyDataSetChanged()
     }
     //ТУТ МЫ ДОЛЖНЫ ПРОПИСАТЬ МЕТОДЫ ДЛЯ УДАЛЕНИЯ, ДОБАВЛЕНИЯ И ТД
 }

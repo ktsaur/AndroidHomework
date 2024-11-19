@@ -5,7 +5,7 @@ import ru.itis.homework2.models.ListPictureItemModel
 
 class ContentRepository {
 
-    fun getListContent(context: Context): List<ListPictureItemModel> = listOf(
+    fun getListContent(): List<ListPictureItemModel> = listOf(
         ListPictureItemModel(
             imageUrl = "https://f4.bcbits.com/img/a1834161590_10.jpg",
             title = "\"Why Lawd?\"",

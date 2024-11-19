@@ -78,7 +78,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                         rvAdapter?.updateItems(currentDataList)
                     }
                     null -> {
-                        Log.d("Ничего не произошло какая-то фигня", "Ничего не произошло какая-то фигня")
+                        Log.d("Ничего не произошло", "Ничего не произошло")
                     }
                 }
 
@@ -88,13 +88,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private fun initRecyclerView(requestManager: RequestManager) {
         if (currentDataList.isEmpty()) {
-            currentDataList.addAll(ContentRepository().getListContent(context = requireContext()))
+            currentDataList.addAll(ContentRepository().getListContent())
         }
 
         rvAdapter = ListContentAdapter(
             contextManager = requestManager,
             action1 = { position ->
-                handleButtonClick(position)
+                onButtonClick(position)
             },
             action2 = { position ->
                 onItemClick(position)
@@ -131,7 +131,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             .commit()
     }
 
-    private fun handleButtonClick(position: Int) {
+    private fun onButtonClick(position: Int) {
         when (position) {
             0 -> {
                 currentDisplayType = DisplayType.LIST
@@ -139,10 +139,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             }
             1 -> {
                 currentDisplayType = DisplayType.GRID
-                binding?.recyclerView?.layoutManager = GridLayoutManager(context, 2, RecyclerView.VERTICAL, false).apply {
+                binding?.recyclerView?.layoutManager = GridLayoutManager(context, 3, RecyclerView.VERTICAL, false).apply {
                     spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                         override fun getSpanSize(position: Int): Int {
-                            return if (position == 0) 2
+                            return if (position == 0) 3
                             else 1
                         }
                     }
@@ -159,10 +159,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 }
             }
         }
-        rvAdapter?.notifyDataSetChanged()
+        rvAdapter?.updateDisplayType(currentDisplayType)
 
     }
-
 
 
     fun getListItems(count: Int): List<ListPictureItemModel>{
@@ -173,6 +172,5 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
         return listItems
     }
-
 
 }
