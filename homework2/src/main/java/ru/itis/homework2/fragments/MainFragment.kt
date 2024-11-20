@@ -2,9 +2,10 @@ package ru.itis.homework2.fragments
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -17,6 +18,7 @@ import ru.itis.homework2.repositories.ContentRepository
 import ru.itis.homework2.repositories.Dataset
 import ru.itis.homework2.utils.ActionType
 import ru.itis.homework2.utils.DisplayType
+import ru.itis.homework2.utils.SwipeHelper
 import kotlin.random.Random
 
 
@@ -30,19 +32,35 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private var currentDisplayType = DisplayType.LIST
 
+    companion object {
+        private const val KEY_DISPLAY_TYPE = "KEY_DISPLAY_TYPE"
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentMainBinding.bind(view)
         val glide = Glide.with(requireContext())
 
-        initRecyclerView(requestManager = glide)
+        currentDisplayType = savedInstanceState?.getSerializable(KEY_DISPLAY_TYPE) as? DisplayType
+            ?: DisplayType.LIST
 
+        initRecyclerView(requestManager = glide)
+        actionByBottomSheet()
+
+
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable(KEY_DISPLAY_TYPE, currentDisplayType)
+    }
+
+    private fun actionByBottomSheet() {
         with(binding) {
             this!!.floatingActionButton.show()
             this.floatingActionButton.setOnClickListener{
                 BottomSheetFragment().show(parentFragmentManager, "BottomSheetFragment")
             }
-
 
             parentFragmentManager.setFragmentResultListener(
                 BottomSheetFragment.ARG_NUMBER,
@@ -103,10 +121,21 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         )
 
         binding?.recyclerView?.apply {
-            val layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-            this.layoutManager = layoutManager
+            layoutManager = when (currentDisplayType) {
+                DisplayType.LIST -> LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+                DisplayType.GRID -> GridLayoutManager(context, 3, RecyclerView.VERTICAL, false)
+                DisplayType.VERTICAL_GRID -> GridLayoutManager(context, 2, RecyclerView.VERTICAL, false).apply {
+                    spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                        override fun getSpanSize(position: Int): Int {
+                            return if (position == 0 || (position - 1) % 4 in listOf(0, 3)) 2 else 1
+                        }
+                    }
+                }
+            }
             adapter = rvAdapter
+
         }
+        if (currentDisplayType == DisplayType.LIST) { swipeToDelete() }
     }
 
 
@@ -118,7 +147,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         val detailFragment = DetailFragment().apply {
             arguments = dataList?.get(position)?.let {
                 DetailFragment.bundle(
-                    title = it.title,
+                    title = dataList[position - 1].title,
                     description = dataList[position - 1].description,
                     imageUrl = dataList[position - 1].imageUrl
                 )
@@ -136,6 +165,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             0 -> {
                 currentDisplayType = DisplayType.LIST
                 binding?.recyclerView?.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+                swipeToDelete()
             }
             1 -> {
                 currentDisplayType = DisplayType.GRID
@@ -161,6 +191,29 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
         rvAdapter?.updateDisplayType(currentDisplayType)
 
+    }
+
+
+    private fun swipeToDelete() {
+        val swipeHelper = object: SwipeHelper() {
+            override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+                if (currentDisplayType == DisplayType.LIST) {
+                    return makeMovementFlags(0, ItemTouchHelper.LEFT)
+                } else {
+                    return makeMovementFlags(0, 0)
+                }
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                if (currentDisplayType == DisplayType.LIST) {
+                    val position = viewHolder.adapterPosition
+                    currentDataList.removeAt(position - 1)
+                    rvAdapter?.updateItems(currentDataList)
+                }
+            }
+        }
+        val itemTouchhelper = ItemTouchHelper(swipeHelper)
+        itemTouchhelper.attachToRecyclerView(binding!!.recyclerView)
     }
 
 
