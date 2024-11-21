@@ -23,6 +23,7 @@ class ListContentAdapter(
     private val contextManager: RequestManager,
     private val action1: (Int) -> Unit,
     private var action2: (Int) -> Unit,
+    private val onItemLongClick: (Int) -> Unit,
     items: List<ListPictureItemModel>
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -94,6 +95,10 @@ class ListContentAdapter(
         }
         else if (holder is SecondTypeViewHolder) {
             holder.bindItem(itemData = dataList[position - 1])
+        }
+        holder.itemView.setOnLongClickListener {
+            onItemLongClick(position)
+            true
         }
     }
 

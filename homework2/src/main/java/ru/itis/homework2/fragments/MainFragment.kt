@@ -1,5 +1,6 @@
 package ru.itis.homework2.fragments
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -52,6 +53,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        Log.d("Текущий Дисплей тайп", currentDisplayType.toString())
         outState.putSerializable(KEY_DISPLAY_TYPE, currentDisplayType)
     }
 
@@ -117,6 +119,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             action2 = { position ->
                 onItemClick(position)
             },
+            onItemLongClick = {
+                    position ->
+                showDeleteConfirmationDialog(position)
+            },
             items = currentDataList
         )
 
@@ -136,6 +142,18 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         }
         if (currentDisplayType == DisplayType.LIST) { swipeToDelete() }
+    }
+
+    private fun showDeleteConfirmationDialog(position: Int) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Удаление элемента")
+            .setMessage("Вы уверены, что хотите удалить этот элемент?")
+            .setPositiveButton("Удалить") { _, _ ->
+                currentDataList.removeAt(position - 1)
+                rvAdapter?.updateItems(currentDataList)
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
     }
 
 
@@ -226,4 +244,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         return listItems
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
+    }
 }
