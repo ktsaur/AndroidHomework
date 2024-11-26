@@ -1,10 +1,11 @@
-package ru.itis.homework3
+package ru.itis.homework3.fragments
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
+import ru.itis.homework3.R
+import ru.itis.homework3.adapters.cardView.SampleRVAdapter
 import ru.itis.homework3.databinding.FragmentViewPagerBinding
 
 class ViewPagerFragment: Fragment(R.layout.fragment_view_pager) {

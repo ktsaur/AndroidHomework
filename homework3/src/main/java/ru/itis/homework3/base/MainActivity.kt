@@ -1,15 +1,11 @@
-package ru.itis.homework3
+package ru.itis.homework3.base
 
 import android.os.Bundle
-import android.view.ViewGroup
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentContainer
 import by.kirich1409.viewbindingdelegate.viewBinding
+import ru.itis.homework3.R
 import ru.itis.homework3.databinding.ActivityMainBinding
+import ru.itis.homework3.fragments.ViewPagerFragment
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
