@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">homework3</string>
+    <string name="btn_back">Назад</string>
+    <string name="btn_farward">Вперед</string>
+</resources>
