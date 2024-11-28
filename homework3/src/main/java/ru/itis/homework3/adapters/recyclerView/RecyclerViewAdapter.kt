@@ -3,6 +3,7 @@ package ru.itis.homework3.adapters.recyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import ru.itis.homework3.R
 import ru.itis.homework3.databinding.ItemAnswerOptionBinding
 import ru.itis.homework3.holders.ViewHolder
 import ru.itis.homework3.models.AnswerModel
@@ -14,6 +15,7 @@ class RecyclerViewAdapter(
 ) : RecyclerView.Adapter<ViewHolder>() {
 
     private var itemsList = mutableListOf<AnswerModel>()
+    var selected_position: Int = RecyclerView.NO_POSITION
 
     init {
         itemsList.addAll(items)
@@ -28,13 +30,23 @@ class RecyclerViewAdapter(
     override fun getItemCount() = itemsList.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bindItem(itemData = itemsList[position], itemCount)
+        holder.bindItem(itemData = itemsList[position], isSelected = position == selected_position)
     }
 
+    fun updateSelection(newPosition: Int) {
+        if (newPosition == selected_position) return
 
-    fun changeItemColor(position: Int, color: Int, icon: Int) {
-        itemsList[position].backgroundTint = color
-        itemsList[position].icon = icon
-        notifyItemChanged(position)
+        if (selected_position != RecyclerView.NO_POSITION) {
+            itemsList[selected_position].isClickable = true
+            itemsList[selected_position].backgroundTint = R.color.white
+            itemsList[selected_position].icon = R.drawable.ic_answer_anactive
+            notifyItemChanged(selected_position)
+        }
+        selected_position = newPosition
+        itemsList[selected_position].isClickable = false
+        itemsList[selected_position].backgroundTint = R.color.green
+        itemsList[selected_position].icon = R.drawable.ic_answer_true
+        notifyItemChanged(selected_position)
+
     }
 }

@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
@@ -31,7 +32,15 @@ class QuestionnaireFragment: Fragment(R.layout.fragment_questionnaire) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         viewPager = requireActivity().findViewById(R.id.view_pager)
+        savedInstanceState?.getInt("SELECTED_POSITION")?.let { savedPosition ->
+            rvAdapter?.updateSelection(savedPosition)
+        }
 
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("SELECTED_POSITION", rvAdapter?.selected_position ?: RecyclerView.NO_POSITION)
     }
 
     fun initViews() {
@@ -91,6 +100,7 @@ class QuestionnaireFragment: Fragment(R.layout.fragment_questionnaire) {
                         AnswerModel(color,  "HashSet", icon),
                         AnswerModel(color, "MutableList", icon))
                         binding.btnForward.text = "Завершить"
+
                 }
             }
 
@@ -113,9 +123,7 @@ class QuestionnaireFragment: Fragment(R.layout.fragment_questionnaire) {
                     if (position < 5) {
                         viewPager.setCurrentItem(position + 1, true)
                     } else if (position == 5) {
-                        btnForward.setOnClickListener {
-                            Snackbar.make(requireView(), "Ответы сохранены", Snackbar.LENGTH_LONG).show()
-                        }
+                        Snackbar.make(requireView(), "Ответы сохранены", Snackbar.LENGTH_LONG).show()
                     }
                 }
 
@@ -131,10 +139,7 @@ class QuestionnaireFragment: Fragment(R.layout.fragment_questionnaire) {
 
     fun onItemClick(position: Int) {
         //в адаптере нужно написать метод чтобы менять картинку и цвет юэкграунда и вызывать его в этом методе. посмотреть гит по андроиду
-        rvAdapter?.changeItemColor(
-            position = position,
-            color = R.color.grin,
-            icon = R.drawable.ic_answer_true)
+        rvAdapter?.updateSelection(position)
 
     }
 

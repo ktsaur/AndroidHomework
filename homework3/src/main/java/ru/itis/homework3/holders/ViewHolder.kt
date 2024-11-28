@@ -11,16 +11,25 @@ class ViewHolder(
 ) : RecyclerView.ViewHolder(viewBinding.root){
 
     init {
-        viewBinding.root.setOnClickListener{
-            action.invoke(adapterPosition)
+        viewBinding.root.setOnClickListener {
+            if (adapterPosition != RecyclerView.NO_POSITION) {
+                action.invoke(adapterPosition)
+            }
         }
     }
 
-    fun bindItem(itemData: AnswerModel, itemCount: Int) {
+    fun bindItem(itemData: AnswerModel, isSelected: Boolean) {
         with(viewBinding) {
             tvAnswerOption1.text = itemData.answer
-            root.setBackgroundColor(root.context.getColor(itemData.backgroundTint))
-            ivIcon.setImageResource(itemData.icon)
+            root.isEnabled = itemData.isClickable
+
+            if (isSelected) {
+                root.setBackgroundColor(root.context.getColor(R.color.green))
+                ivIcon.setImageResource(R.drawable.ic_answer_true)
+            } else {
+                root.setBackgroundColor(root.context.getColor(R.color.white))
+                ivIcon.setImageResource(R.drawable.ic_answer_anactive)
+            }
         }
     }
 }
