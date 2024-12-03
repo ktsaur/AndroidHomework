@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "ru.itis.androidhomework"
+    namespace = "ru.itis.homework2"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "ru.itis.androidhomework"
+        applicationId = "ru.itis.homework2"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -33,6 +33,10 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -42,6 +46,12 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation ("androidx.recyclerview:recyclerview:1.2.1")
+    implementation("com.google.android.material:material:1.8.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
