@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">homework4</string>
+    <string name="notification_header">Введите заголовок уведомления</string>
+    <string name="notification_text">Введите текст уведомления</string>
+    <string name="reset_color">Сбросить цвет</string>
+    <string name="show_notification">Показать уведомление</string>
+</resources>
