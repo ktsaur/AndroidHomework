@@ -6,10 +6,6 @@
     <color name="sand">#DCBF9D</color>
     <color name="blue">#96BAC4</color>
     <color name="green">#003E46</color>
+    <color name="primary">#6200EE</color>
 
-<!--    <color-array name="colors_array">-->
-<!--        <item> <color name="sand">#DCBF9D</color> </item>-->
-<!--        <item> <color name="blue">#96BAC4</color> </item>-->
-<!--        <item> <color name="green">#003E46</color> </item>-->
-<!--    </color-array>-->
 </resources>

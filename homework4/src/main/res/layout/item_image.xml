@@ -30,7 +30,8 @@
             android:layout_gravity="center_horizontal"
             android:layout_margin="4dp"
             android:visibility="invisible"
-            android:src="@drawable/baseline_cancel_24" />
+            android:src="@drawable/baseline_cancel_24"
+            app:tint="?attr/colorPrimary" />
 
     </FrameLayout>
 
