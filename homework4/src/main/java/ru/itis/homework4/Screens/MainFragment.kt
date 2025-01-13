@@ -138,7 +138,7 @@ class MainFragment: Fragment(R.layout.fragment_main) {
     }
 
     private fun openGallery() {
-        getImage.launch("image/*")
+        getImage.launch(context?.getString(R.string.MIME_TYPE_IMAGE))
     }
 
     fun initActionWithThemes() {
