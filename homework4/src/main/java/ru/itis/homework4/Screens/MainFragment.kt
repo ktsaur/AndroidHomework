@@ -174,7 +174,6 @@ class MainFragment: Fragment(R.layout.fragment_main) {
             context?.getString(R.string.green) -> R.style.GreenTheme_AndroidHomework
             else -> R.style.Base_Theme_AndroidHomework
         }
-        requireActivity().setTheme(newTheme)
         requireActivity().intent.putExtra(context?.getString(R.string.current_theme), newTheme)
         requireActivity().recreate()
     }
