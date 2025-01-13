@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">homework4</string>
+    <string name="notification_header">Введите заголовок уведомления</string>
+    <string name="notification_text">Введите текст уведомления</string>
+    <string name="reset_color">Сбросить цвет</string>
+    <string name="show_notification">Показать уведомление</string>
+    <string name="open_from_notification">open_from_notification</string>
+    <string name="app_open_from_notification">Приложение было запущено из уведомления</string>
+    <string name="current_theme">current_theme</string>
+    <string name="Max">Max</string>
+    <string name="Low">Low</string>
+    <string name="Hight">Hight</string>
+    <string name="Default">Default</string>
+    <string name="Empty_title_notification">Пустой заголовок уведомления</string>
+    <string name="Empty_message_notification">Пустое содержание уведомления</string>
+    <string name="Image_uploaded">Изображение уже загружено</string>
+    <string name="sand">sand</string>
+    <string name="blue">blue</string>
+    <string name="green">green</string>
+    <string name="base">base</string>
+    <string name="channelId">channelId</string>
+    <string name="Default_channel">Default Channel</string>
+    <string name="MIME_TYPE_IMAGE">image/*</string>
+</resources>
