@@ -10,6 +10,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import ru.itis.homework4.Activity.MainActivity
 import ru.itis.homework4.Notification.NotificationData
@@ -24,8 +25,17 @@ class MainFragment: Fragment(R.layout.fragment_main) {
     private var selectedImportance: NotificationType = NotificationType.DEFAULT
     private var colorsFlag = true
 
-    private val selectImageRequestCode = 200
     private var selectedImageUri: Uri? = null
+
+    private val getImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        if (uri != null) {
+            selectedImageUri = uri
+            val imageView = binding?.includeImage?.imageCircle?.findViewById<ImageView>(R.id.iv_image)
+            imageView?.setImageURI(selectedImageUri)
+            val cancelIcon = binding?.includeImage?.imageCircle?.findViewById<ImageView>(R.id.ic_cancel)
+            cancelIcon?.visibility = View.VISIBLE
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,9 +122,10 @@ class MainFragment: Fragment(R.layout.fragment_main) {
             val cancelIcon = this?.includeImage?.imageCircle?.findViewById<ImageView>(R.id.ic_cancel)
 
             imageView?.setOnClickListener{
-                imageView.setImageResource(R.drawable.image)
-                imageView.setBackgroundResource(R.drawable.circle_shape)
-                cancelIcon?.visibility = View.VISIBLE
+//                imageView.setImageResource(R.drawable.image)
+//                imageView.setBackgroundResource(R.drawable.circle_shape)
+//                cancelIcon?.visibility = View.VISIBLE
+                            openGallery()
             }
 
             cancelIcon?.setOnClickListener{
@@ -123,6 +134,10 @@ class MainFragment: Fragment(R.layout.fragment_main) {
                 cancelIcon.visibility = View.INVISIBLE
             }
         }
+    }
+
+    private fun openGallery() {
+        getImage.launch("image/*")
     }
 
     fun initActionWithThemes() {
@@ -136,7 +151,6 @@ class MainFragment: Fragment(R.layout.fragment_main) {
                     colorsFlag = true
                 }
             }
-
             this?.dropdownMenu?.linear?.findViewById<ImageButton>(R.id.image_sand)?.setOnClickListener{
                 context?.getString(R.string.sand)?.let { it1 -> changeTheme(it1) }
             }
@@ -163,7 +177,6 @@ class MainFragment: Fragment(R.layout.fragment_main) {
         requireActivity().intent.putExtra( context?.getString(R.string.current_theme), newTheme)
         requireActivity().recreate()
     }
-
 
     override fun onDestroy() {
         super.onDestroy()
