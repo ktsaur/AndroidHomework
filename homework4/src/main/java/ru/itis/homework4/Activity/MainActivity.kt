@@ -21,7 +21,6 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.container, MainFragment())
             .commit()
-
         initNotification()
     }
 
