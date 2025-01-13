@@ -122,6 +122,7 @@ class MainFragment: Fragment(R.layout.fragment_main) {
             val cancelIcon = this?.includeImage?.imageCircle?.findViewById<ImageView>(R.id.ic_cancel)
 
             imageView?.setOnClickListener{
+//                if (imageView.drawable != null) Toast.makeText(context, context?.getString(R.string.Image_uploaded), Toast.LENGTH_SHORT).show()
 //                imageView.setImageResource(R.drawable.image)
 //                imageView.setBackgroundResource(R.drawable.circle_shape)
 //                cancelIcon?.visibility = View.VISIBLE
@@ -174,7 +175,7 @@ class MainFragment: Fragment(R.layout.fragment_main) {
             else -> R.style.Base_Theme_AndroidHomework
         }
         requireActivity().setTheme(newTheme)
-        requireActivity().intent.putExtra( context?.getString(R.string.current_theme), newTheme)
+        requireActivity().intent.putExtra(context?.getString(R.string.current_theme), newTheme)
         requireActivity().recreate()
     }
 

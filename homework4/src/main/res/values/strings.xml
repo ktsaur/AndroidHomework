@@ -13,6 +13,7 @@
     <string name="Default">Default</string>
     <string name="Empty_title_notification">Пустой заголовок уведомления</string>
     <string name="Empty_message_notification">Пустое содержание уведомления</string>
+    <string name="Image_uploaded">Изображение уже загружено</string>
     <string name="sand">sand</string>
     <string name="blue">blue</string>
     <string name="green">green</string>
