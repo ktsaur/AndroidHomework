@@ -1,10 +1,11 @@
 package ru.itis.homework4.Activity
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import ru.itis.homework4.Notification.NotificationHandler
 import ru.itis.homework4.R
-import ru.itis.homework4.Screens.NotificationFragment
+import ru.itis.homework4.Screens.MainFragment
 import ru.itis.homework4.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -12,23 +13,29 @@ class MainActivity : AppCompatActivity() {
     private var binding: ActivityMainBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val selectedTheme = intent.getStringExtra("selected_theme")
-
-        when(selectedTheme) {
-            "sand" -> setTheme(R.style.SandTheme_AndroidHomework)
-            "blue" -> setTheme(R.style.BlueTheme_AndroidHomework)
-            "green" -> setTheme(R.style.GreenTheme_AndroidHomework)
-            "base" -> setTheme(R.style.Base_Theme_AndroidHomework)
-        }
+        initViews()
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.container, NotificationFragment())
+            .replace(R.id.container, MainFragment())
             .commit()
+
+        initNotification()
+    }
+
+    fun initViews() {
+        val selectedTheme = intent.getIntExtra(getString(R.string.current_theme), R.style.Base_Theme_AndroidHomework)
+        setTheme(selectedTheme)
+    }
+
+    fun initNotification() {
         if(notificationHandler == null) {
             notificationHandler = NotificationHandler(this.applicationContext)
+        }
+        if (intent.getBooleanExtra(getString(R.string.open_from_notification), false)) {
+            Toast.makeText(this, getString(R.string.app_open_from_notification),  Toast.LENGTH_SHORT).show()
         }
     }
 

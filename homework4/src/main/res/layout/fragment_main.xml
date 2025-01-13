@@ -9,11 +9,11 @@
         android:id="@+id/include_image"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        layout="@layout/item_image"
+        layout="@layout/item_image2"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="170dp"/>
+        android:layout_marginTop="20dp"/>
 
     <include
         android:id="@+id/dropdown_menu"

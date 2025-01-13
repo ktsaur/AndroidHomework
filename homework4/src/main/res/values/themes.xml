@@ -3,21 +3,25 @@
     <style name="Base.Theme.AndroidHomework" parent="Theme.MaterialComponents.Light">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="imageCancelTint">@color/primary</item>
     </style>
 
     <style name="SandTheme.AndroidHomework" parent="Base.Theme.AndroidHomework" >
         <item name="colorPrimary">@color/sand</item>
         <item name="buttonTint">@color/sand</item>
+        <item name="imageCancelTint">@color/sand</item>
     </style>
 
     <style name="GreenTheme.AndroidHomework" parent="Base.Theme.AndroidHomework" >
         <item name="colorPrimary">@color/green</item>
         <item name="buttonTint">@color/green</item>
+        <item name="imageCancelTint">@color/green</item>
     </style>
 
     <style name="BlueTheme.AndroidHomework" parent="Base.Theme.AndroidHomework" >
         <item name="colorPrimary">@color/blue</item>
         <item name="buttonTint">@color/blue</item>
+        <item name="imageCancelTint">@color/blue</item>
     </style>
         
 </resources>

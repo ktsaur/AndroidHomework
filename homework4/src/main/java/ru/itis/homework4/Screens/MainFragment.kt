@@ -1,6 +1,6 @@
 package ru.itis.homework4.Screens
 
-import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -11,19 +11,21 @@ import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.google.android.material.snackbar.Snackbar
 import ru.itis.homework4.Activity.MainActivity
 import ru.itis.homework4.Notification.NotificationData
 import ru.itis.homework4.Notification.NotificationHandler
 import ru.itis.homework4.Notification.NotificationType
 import ru.itis.homework4.R
-import ru.itis.homework4.databinding.FragmentNotificationBinding
+import ru.itis.homework4.databinding.FragmentMainBinding
 
-class NotificationFragment: Fragment(R.layout.fragment_notification) {
-    private var binding: FragmentNotificationBinding? = null
+class MainFragment: Fragment(R.layout.fragment_main) {
+    private var binding: FragmentMainBinding? = null
     private var notificationHandler: NotificationHandler? = null
     private var selectedImportance: NotificationType = NotificationType.DEFAULT
     private var colorsFlag = true
+
+    private val selectImageRequestCode = 200
+    private var selectedImageUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +36,7 @@ class NotificationFragment: Fragment(R.layout.fragment_notification) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentNotificationBinding.bind(view)
+        binding = FragmentMainBinding.bind(view)
 
         initActionWithThemes()
         initActionWithImage()
@@ -44,7 +46,6 @@ class NotificationFragment: Fragment(R.layout.fragment_notification) {
 
     fun initImportanceSpinner() {
         val spinner: Spinner = binding?.spinnerImpotrances?.findViewById(R.id.spinner_impotrances) ?: return
-
         ArrayAdapter.createFromResource(
             requireContext(),
             R.array.importance_array,
@@ -63,9 +64,9 @@ class NotificationFragment: Fragment(R.layout.fragment_notification) {
             ) {
                 val selectedItem = parent?.getItemAtPosition(position).toString()
                 selectedImportance = when (selectedItem) {
-                    "MAX" -> NotificationType.MAX
-                    "LOW" -> NotificationType.LOW
-                    "HIGHT" -> NotificationType.HIGHT
+                    context?.getString(R.string.Max) -> NotificationType.MAX
+                    context?.getString(R.string.Low)-> NotificationType.LOW
+                    context?.getString(R.string.Hight) -> NotificationType.HIGHT
                     else -> NotificationType.DEFAULT
                 }
                 Log.d("Spinner", "Selected Importance: $selectedImportance")
@@ -81,14 +82,17 @@ class NotificationFragment: Fragment(R.layout.fragment_notification) {
     fun actionWithNotification (importance: NotificationType) {
         with(binding) {
             val button = this?.btnShowNotification
-            val header = this?.header?.text.toString()
-            val message = this?.message?.text.toString()
 
             button?.setOnClickListener{
+                val header = this?.header?.text.toString()
+                val message = this?.message?.text.toString()
+
                 if(header.isBlank()) {
-//                    Snackbar.make(requireView(), "Заголовок уведомления пустой", Snackbar.LENGTH_LONG).show()
-                    Toast.makeText(context, "Заголовок уведомления пустой", Toast.LENGTH_SHORT).show()
-                } else {
+                    Toast.makeText(context, context?.getString(R.string.Empty_title_notification), Toast.LENGTH_SHORT).show()
+                }
+                else if (message.isBlank()) {
+                    Toast.makeText(context, context?.getString(R.string.Empty_message_notification), Toast.LENGTH_SHORT).show()
+                } else{
                     notificationHandler?.showNotification(
                         data = NotificationData(
                             id = counter++,
@@ -109,12 +113,13 @@ class NotificationFragment: Fragment(R.layout.fragment_notification) {
 
             imageView?.setOnClickListener{
                 imageView.setImageResource(R.drawable.image)
+                imageView.setBackgroundResource(R.drawable.circle_shape)
                 cancelIcon?.visibility = View.VISIBLE
             }
 
             cancelIcon?.setOnClickListener{
                 imageView?.setImageDrawable(null)
-                imageView?.setBackgroundResource(R.color.gray)
+                imageView?.setBackgroundResource(R.drawable.circle_shape)
                 cancelIcon.visibility = View.INVISIBLE
             }
         }
@@ -133,36 +138,30 @@ class NotificationFragment: Fragment(R.layout.fragment_notification) {
             }
 
             this?.dropdownMenu?.linear?.findViewById<ImageButton>(R.id.image_sand)?.setOnClickListener{
-                changeTheme("sand")
+                context?.getString(R.string.sand)?.let { it1 -> changeTheme(it1) }
             }
             this?.dropdownMenu?.linear?.findViewById<ImageButton>(R.id.image_blue)?.setOnClickListener{
-                changeTheme("blue")
+                context?.getString(R.string.blue)?.let { it1 -> changeTheme(it1) }
             }
             this?.dropdownMenu?.linear?.findViewById<ImageButton>(R.id.image_green)?.setOnClickListener{
-                changeTheme("green")
+                context?.getString(R.string.green)?.let { it1 -> changeTheme(it1) }
             }
             this?.btnResetColor?.setOnClickListener {
-                changeTheme("base")
+                context?.getString(R.string.base)?.let { it1 -> changeTheme(it1) }
             }
-
-
         }
     }
 
     fun changeTheme(themeName: String) {
-        val intent = Intent(requireContext(), MainActivity::class.java).apply {
-            putExtra("selected_theme", themeName)
+        val newTheme = when (themeName) {
+            context?.getString(R.string.sand) -> R.style.SandTheme_AndroidHomework
+            context?.getString(R.string.blue) -> R.style.BlueTheme_AndroidHomework
+            context?.getString(R.string.green) -> R.style.GreenTheme_AndroidHomework
+            else -> R.style.Base_Theme_AndroidHomework
         }
-        startActivity(intent)
-        requireActivity().finish()
-
-        val newColor = when (themeName) {
-            "sand" -> requireContext().getColor(R.color.sand)
-            "blue" -> requireContext().getColor(R.color.blue)
-            "green" -> requireContext().getColor(R.color.green)
-            else -> requireContext().getColor(R.color.primary)
-        }
-        binding?.includeImage?.icCancel?.findViewById<ImageView>(R.id.ic_cancel)?.setColorFilter(newColor)
+        requireActivity().setTheme(newTheme)
+        requireActivity().intent.putExtra( context?.getString(R.string.current_theme), newTheme)
+        requireActivity().recreate()
     }
 
 
