@@ -10,18 +10,21 @@
         <item name="colorPrimary">@color/sand</item>
         <item name="buttonTint">@color/sand</item>
         <item name="imageCancelTint">@color/sand</item>
+        <item name="android:statusBarColor">@color/sandDark</item>
     </style>
 
     <style name="GreenTheme.AndroidHomework" parent="Base.Theme.AndroidHomework" >
         <item name="colorPrimary">@color/green</item>
         <item name="buttonTint">@color/green</item>
         <item name="imageCancelTint">@color/green</item>
+        <item name="android:statusBarColor">@color/greenDark</item>
     </style>
 
     <style name="BlueTheme.AndroidHomework" parent="Base.Theme.AndroidHomework" >
         <item name="colorPrimary">@color/blue</item>
         <item name="buttonTint">@color/blue</item>
         <item name="imageCancelTint">@color/blue</item>
+        <item name="android:statusBarColor">@color/blueDark</item>
     </style>
         
 </resources>
