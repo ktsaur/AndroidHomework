@@ -27,9 +27,11 @@ import androidx.compose.material.RadioButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,22 +46,26 @@ import androidx.compose.ui.tooling.preview.Preview
 
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.fragment.app.Fragment
+import ru.itis.homework5.Fragment.ComposeSampleFragment
 import ru.itis.homework5.R
 import ru.itis.homework5.model.AnswerModel
 import kotlin.math.exp
 
-
-@Preview
 @Composable
-fun SimpleOutlinedTextFieldSample() {
-    var text by remember { mutableStateOf("") }
-
+fun SimpleOutlinedTextFieldSample(
+    selectedValue: String,
+    onValueChange: (String) -> Unit
+){
+    var text by remember { mutableStateOf(selectedValue) }
     OutlinedTextField(
         value = text,
-        onValueChange = { text = it },
+        onValueChange = {
+            text = it
+            onValueChange(it)},
         label = { Text(
-                text = stringResource(id = R.string.number_of_coroutines),
-            )},
+            text = stringResource(id = R.string.number_of_coroutines),
+        )},
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp, top = 70.dp)
@@ -67,15 +73,18 @@ fun SimpleOutlinedTextFieldSample() {
     )
 }
 
-
 @Preview
 @Composable
-fun RadioButtonSingleSelection(modifier: Modifier = Modifier) {
+fun RadioButtonSingleSelection(
+    modifier: Modifier = Modifier,
+    selectedValue: String,
+    onValueChange: (String) -> Unit
+) {
     val radioOptions = listOf("Sequentially", "Parallel")
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
+    var selectedOption = rememberUpdatedState(selectedValue)
     // Note that Modifier.selectableGroup() is essential to ensure correct accessibility behavior
     Column(modifier.selectableGroup()) {
-        Text (
+        Text(
             text = "How will coroutines be launched?",
             color = colorResource(id = R.color.black),
             modifier = Modifier
@@ -93,18 +102,20 @@ fun RadioButtonSingleSelection(modifier: Modifier = Modifier) {
                     .fillMaxWidth()
                     .height(40.dp)
                     .selectable(
-                        selected = (text == selectedOption),
-                        onClick = { onOptionSelected(text) },
+                        selected = (text == selectedOption.value),
+                        onClick = {
+                            onValueChange(text)
+                        },
                         role = Role.RadioButton
                     )
                     .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 RadioButton(
-                    selected = (text == selectedOption), //Указывает, выбран ли переключатель.
+                    selected = (text == selectedOption.value), //Указывает, выбран ли переключатель.
                     onClick = null // null recommended for accessibility with screen readers
-                // лямбда-функция, которая выполняется при нажатии переключателя.
-                // Если это null , пользователь не может напрямую взаимодействовать с переключателем.
+                    // лямбда-функция, которая выполняется при нажатии переключателя.
+                    // Если это null , пользователь не может напрямую взаимодействовать с переключателем.
                 )
                 Text(
                     text = text,
@@ -115,11 +126,16 @@ fun RadioButtonSingleSelection(modifier: Modifier = Modifier) {
     }
 }
 
+
 @Preview
 @Composable
-fun RadioButtonLogicalSelection(modifier: Modifier = Modifier) {
+fun RadioButtonLogicalSelection(
+    modifier: Modifier = Modifier,
+    selectedValue: String,
+    onValueChange: (String) -> Unit
+){
     val radioOptions = listOf("Cancel", "Continue")
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
+    var selectedOption = rememberUpdatedState(selectedValue)
     // Note that Modifier.selectableGroup() is essential to ensure correct accessibility behavior
     Column(modifier.selectableGroup()) {
         Text (
@@ -140,15 +156,16 @@ fun RadioButtonLogicalSelection(modifier: Modifier = Modifier) {
                     .fillMaxWidth()
                     .height(40.dp)
                     .selectable(
-                        selected = (text == selectedOption),
-                        onClick = { onOptionSelected(text) },
+                        selected = (text == selectedOption.value),
+                        onClick = {
+                            onValueChange(text) },
                         role = Role.RadioButton
                     )
                     .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 RadioButton(
-                    selected = (text == selectedOption), //Указывает, выбран ли переключатель.
+                    selected = (text == selectedOption.value), //Указывает, выбран ли переключатель.
                     onClick = null // null recommended for accessibility with screen readers
                     // лямбда-функция, которая выполняется при нажатии переключателя.
                     // Если это null , пользователь не может напрямую взаимодействовать с переключателем.
@@ -164,14 +181,17 @@ fun RadioButtonLogicalSelection(modifier: Modifier = Modifier) {
 
 @Preview
 @Composable
-fun MainScreen2() {
+fun ThreadPool(
+    selectedValue: String,
+    onValueChange: (String) -> Unit
+){
     Surface(modifier = Modifier
         .padding(start = 100.dp, end = 100.dp, top = 30.dp)
         .width(200.dp)
         .wrapContentSize(Alignment.Center)
     ) {
         val list = listOf("Default", "Main", "Unconfined", "IO")
-        val currentValue = remember { mutableStateOf(list[0]) }
+        var currentValue = remember { mutableStateOf(list[0]) }
         val expanded = remember { mutableStateOf(false) }
 
         Box(modifier = Modifier.fillMaxWidth()) {
@@ -182,7 +202,7 @@ fun MainScreen2() {
                 .align(Alignment.Center)) {
 
                 Text(
-                    text = currentValue.value,
+                    text = selectedValue,
                     style = TextStyle(color = Color.Black, fontSize = 20.sp)
                 )
                 Divider(
@@ -198,13 +218,12 @@ fun MainScreen2() {
                     expanded.value = !expanded.value
                 }) {
 
-                    list.forEach {
+                    list.forEach {  item ->
                         DropdownMenuItem(onClick = {
                             expanded.value = false
-                            currentValue.value = it
-
+                            onValueChange(item)
                         }) {
-                            Text(text = it)
+                            Text(text = item)
                         }
                     }
                 }
@@ -215,22 +234,27 @@ fun MainScreen2() {
 
 @Preview
 @Composable
-fun LaunchButtonExample() {
-    OutlinedButton(onClick = {  },
+fun LaunchButtonExample(
+    onBottonClick: () -> Unit
+) {
+    OutlinedButton(onClick = { onBottonClick() },
         modifier = Modifier.size(width = 170.dp , height = 40.dp)) {
         Text("Launch")
     }
 }
 
 @Composable
-fun CancelButtonExample() { //здесь надо передать функцию onBottonClick()
-    OutlinedButton(onClick = { },
+fun CancelButtonExample(
+    onBottonClick: () -> Unit
+) { //здесь надо передать функцию onBottonClick()
+    OutlinedButton(onClick = { onBottonClick() },
         modifier = Modifier.size(width = 170.dp , height = 40.dp)) {
         Text("Cancel")
     }
 }
 
 
+/*
 @Composable
 fun ComposeListSample(
     listState: LazyListState,
@@ -270,3 +294,4 @@ fun ListItemSample(model: AnswerModel ) {
 
 
 
+*/
