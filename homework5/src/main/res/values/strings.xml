@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">homework5</string>
+    <string name="sample">ComposeSample</string>
+    <string name="number_of_coroutines">Enter the number of coroutines</string>
+
+</resources>
