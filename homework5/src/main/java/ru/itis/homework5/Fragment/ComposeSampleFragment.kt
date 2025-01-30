@@ -1,8 +1,13 @@
 package ru.itis.homework5.Fragment
 
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -12,11 +17,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.itis.homework5.R
@@ -29,8 +38,10 @@ import ru.itis.homework5.ui.SimpleOutlinedTextFieldSample
 import ru.itis.homework5.ui.ThreadPool
 
 class ComposeSampleFragment: BaseFragment(R.layout.fragment_compose_sample) {
-    private var job: Job? = null
-    private val scope: LifecycleCoroutineScope = lifecycleScope //от этого scope надо вызывать все корутины и от него останавливать
+    private var fragmentJob = SupervisorJob()
+    private val scope: CoroutineScope = lifecycleScope //от этого scope надо вызывать все корутины и от него останавливать
+    val jobsList = mutableListOf<Job>()
+    private var isError by mutableStateOf(false)
 
     private var count_of_corutines by mutableStateOf("")  //количество введенных корутин
     private var how_launch by mutableStateOf("Sequentially") // последовательно или параллельно
@@ -43,7 +54,6 @@ class ComposeSampleFragment: BaseFragment(R.layout.fragment_compose_sample) {
         super.onViewCreated(view, savedInstanceState)
 
         setView()
-
     }
 
     fun setView() {
@@ -55,8 +65,11 @@ class ComposeSampleFragment: BaseFragment(R.layout.fragment_compose_sample) {
                         selectedValue = count_of_corutines,
                         onValueChange = { newValue ->
                             count_of_corutines = newValue
+                            isError = false
                             Log.d("ComposeFragment", "Количество корутин: $newValue")
-                        }
+                        },
+                        isError = isError,
+                        setError = { newError -> isError = newError }
                     )
                     RadioButtonSingleSelection(
                         selectedValue = how_launch,
@@ -90,31 +103,61 @@ class ComposeSampleFragment: BaseFragment(R.layout.fragment_compose_sample) {
         }
     }
 
+
     fun launch() { //запуск корутин
-
-    }
-
-    fun cancel() { //отмена корутин
-
-    }
-
-    //короче нужно запускать все корутины через job и соответсвенно вызывать launch{}
-    override fun onStart() {
-        super.onStart()
-        scope.launch {
-            delay(3000L)
+        if (count_of_corutines.isEmpty()) {
+            isError = true
+            return
+        }
+        val dispatchers = when (selectedDispatcher) {
+            "Default" -> Dispatchers.Default
+            "IO" -> Dispatchers.IO
+            "Main" -> Dispatchers.Main
+            else -> Dispatchers.Unconfined
+        }
+        if (how_launch == "Parallel") {
+            repeat(count_of_corutines.toInt()) { count ->
+                val job = scope.async(dispatchers, start = CoroutineStart.DEFAULT) {
+                    delay(1000L)
+                    Log.i("Courutin is start", "Корутина $count запущена")
+                }
+                jobsList.add(job)
+            }
+        } else if (how_launch == "Sequentially") {
+            scope.launch(dispatchers){
+                repeat(count_of_corutines.toInt()) { count ->
+                    val job = scope.async {
+                        delay(1000L)
+                        Log.i("Coroutine started", "Корутина $count запущена")
+                    }
+                    jobsList.add(job)
+                    job.await()
+                }
+            }
         }
     }
 
+    fun cancel() {
+        if (jobsList.isEmpty()) {
+            Toast.makeText(context, "Корутины не были запущены", Toast.LENGTH_SHORT).show()
+            return
+        }
+        Log.i("Количество корутин, которое было отменено", "${jobsList.size}")
+        jobsList.forEach { it.cancel() }
+        jobsList.clear()
+    }
+
+
     override fun onStop() {
         super.onStop()
-        scope.cancel() // отмена всех корутин
-        job = null
+        if (selectedLogic == "Cancel") {
+            cancel()
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         composeView = null
-        job = null
+        fragmentJob.cancel()
     }
 }
