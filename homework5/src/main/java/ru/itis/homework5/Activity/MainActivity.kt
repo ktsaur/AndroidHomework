@@ -5,10 +5,10 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import ru.itis.homework5.Fragment.ComposeSampleFragment
-import ru.itis.homework5.PermissionsHandler
+import ru.itis.homework5.Fragment.MainFragment
+import ru.itis.homework5.util.PermissionsHandler
 import ru.itis.homework5.R
 
 class MainActivity : AppCompatActivity() {
@@ -19,16 +19,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        permissionsHandler.initContract()
+
+        Log.i("TAG MAIN ACTIVITY", "${Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU}")
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            permissionsHandler.requestSinglePermission(android.Manifest.permission.POST_NOTIFICATIONS)
+            permissionsHandler.initContract()
         }
 
         setContentView(R.layout.activity_main)
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.container, ComposeSampleFragment())
+            .replace(R.id.container, MainFragment())
             .commit()
     }
 

@@ -51,7 +51,6 @@ fun SimpleOutlinedTextFieldSample(
     onValueChange: (String) -> Unit
 ){
     var text by remember { mutableStateOf(selectedValue) }
-    var isError by remember { mutableStateOf(false) }
 
     OutlinedTextField(
         value = text,
