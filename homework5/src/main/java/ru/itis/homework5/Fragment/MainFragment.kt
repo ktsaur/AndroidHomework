@@ -39,9 +39,9 @@ class MainFragment: BaseFragment(R.layout.fragment_compose_sample) {
     private var isError by mutableStateOf(false)
 
     private var count_of_corutines by mutableStateOf("")  //количество введенных корутин
-    private var how_launch by mutableStateOf("Sequentially") // последовательно или параллельно
-    private var selectedLogic by mutableStateOf("Cancel") //отменить при сворачивании или нет
-    private var selectedDispatcher by mutableStateOf("Default")
+    private var how_launch by mutableStateOf(context?.getString(R.string.sequentially)) // последовательно или параллельно
+    private var selectedLogic by mutableStateOf(context?.getString(R.string.cancel)) //отменить при сворачивании или нет
+    private var selectedDispatcher by mutableStateOf(context?.getString(R.string.Default))
 
     private val viewBinding: FragmentComposeSampleBinding by viewBinding(FragmentComposeSampleBinding::bind)
 
@@ -67,21 +67,21 @@ class MainFragment: BaseFragment(R.layout.fragment_compose_sample) {
                         setError = { newError -> isError = newError }
                     )
                     RadioButtonSingleSelection(
-                        selectedValue = how_launch,
+                        selectedValue = how_launch.toString(),
                         onValueChange = { newValue ->
                             how_launch = newValue
                             Log.d("ComposeFragment", "Как будет запускаться: $newValue")
                         }
                     )
                     RadioButtonLogicalSelection(
-                        selectedValue = selectedLogic,
+                        selectedValue = selectedLogic.toString(),
                         onValueChange = { newValue ->
                             selectedLogic = newValue
                             Log.d("ComposeFragment", "Выбранная логика: $newValue")
                         }
                     )
                     ThreadPool(
-                        selectedValue = selectedDispatcher,
+                        selectedValue = selectedDispatcher.toString(),
                         onValueChange = { newValue ->
                             selectedDispatcher = newValue
                             Log.d("ComposeFragment", "Выбранный диспетчер: $newValue")
@@ -107,22 +107,23 @@ class MainFragment: BaseFragment(R.layout.fragment_compose_sample) {
         isError = false
 
         val dispatchers = when (selectedDispatcher) {
-            "Default" -> Dispatchers.Default
-            "IO" -> Dispatchers.IO
-            "Main" -> Dispatchers.Main
+            context?.getString(R.string.Default) -> Dispatchers.Default
+            context?.getString(R.string.IO) -> Dispatchers.IO
+            context?.getString(R.string.main) -> Dispatchers.Main
             else -> Dispatchers.Unconfined
         }
-        val coroutineScope = if (selectedLogic == "Continue") GlobalScope else scope
+        val coroutineScope = if (selectedLogic == context?.getString(R.string.Continue)) GlobalScope else scope
 
         when {
-            how_launch == "Parallel" -> {
+            how_launch == context?.getString(R.string.parallel) -> {
                 repeat(count_of_corutines.toInt()) { count ->
                     val job = coroutineScope.launch(dispatchers) {
                         try {
                             delay(1000L)
-                            Log.i("Courutin is start", "Корутина $count запущена")
+                            Log.i("Coroutin is start", "Корутина $count запущена")
                         } catch (e: Exception) {
-                            Toast.makeText(context, "Ошибка запуска корутин", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context,
+                                context?.getString(R.string.error_starting_coroutine), Toast.LENGTH_SHORT).show()
                         }
                     }
                     jobsList.add(job)
@@ -140,7 +141,8 @@ class MainFragment: BaseFragment(R.layout.fragment_compose_sample) {
                             job.await()
                         }
                     }catch (e: Exception) {
-                        Toast.makeText(context, "Ошибка запуска корутин", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context,
+                            context?.getString(R.string.error_starting_coroutine), Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -149,10 +151,12 @@ class MainFragment: BaseFragment(R.layout.fragment_compose_sample) {
 
     fun cancel() {
         if (jobsList.isEmpty()) {
-            Toast.makeText(context, "Корутины не были запущены", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,
+                context?.getString(R.string.coroutines_were_not_running), Toast.LENGTH_SHORT).show()
             return
         }
-        Toast.makeText(context, "Количество корутин, которое было отменено: ${jobsList.size}", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context,
+            context?.getString(R.string.canceled_coroutines_count, jobsList.size), Toast.LENGTH_SHORT).show()
         Log.i("Количество корутин, которое было отменено", "${jobsList.size}")
         jobsList.forEach { it.cancel() }
         jobsList.clear()
@@ -161,7 +165,7 @@ class MainFragment: BaseFragment(R.layout.fragment_compose_sample) {
 
     override fun onStop() {
         super.onStop()
-        if (selectedLogic == "Cancel") {
+        if (selectedLogic == context?.getString(R.string.cancel)) {
             cancel()
         }
     }

@@ -6,24 +6,24 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationManagerCompat
 import ru.itis.homework5.Fragment.MainFragment
-import ru.itis.homework5.util.PermissionsHandler
 import ru.itis.homework5.R
 
 class MainActivity : AppCompatActivity() {
 
-    val permissionsHandler = PermissionsHandler( this,
-        onSinglePermissionDenied = { openDialog() },
-    )
+    private var singlePermissionResult: ActivityResultLauncher<String>? = null
+    private var count = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        Log.i("TAG MAIN ACTIVITY", "${Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU}")
+        initContract()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            permissionsHandler.initContract()
+            requestSinglePermission(android.Manifest.permission.POST_NOTIFICATIONS)
         }
 
         setContentView(R.layout.activity_main)
@@ -33,12 +33,11 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-
     fun openDialog() {
         AlertDialog.Builder(this)
-            .setTitle("Разерешения")
-            .setMessage("Разрешите отправку уведомлений")
-            .setPositiveButton("Открыть настройки") { _, _ ->
+            .setTitle(getString(R.string.permissions))
+            .setMessage(getString(R.string.allow_notifications))
+            .setPositiveButton(getString(R.string.open_settings)) { _, _ ->
                 openAppSettings()
             }.show()
     }
@@ -48,5 +47,25 @@ class MainActivity : AppCompatActivity() {
             data = android.net.Uri.parse("package:$packageName")
         }
         startActivity(intent)
+    }
+
+    fun initContract() {
+        singlePermissionResult = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            Log.i("TAG HermissionHandler", "${isGranted}")
+            if (!isGranted) {
+                requestSinglePermission(android.Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
+
+    fun requestSinglePermission(permission: String) {
+        if (NotificationManagerCompat.from(this).areNotificationsEnabled()) {
+            return
+        }
+        count++
+        Log.i("TAG HermissionHandler", "count = ${count}")
+        if (count < 3) {
+            singlePermissionResult?.launch(permission)
+        } else { openDialog() }
     }
 }

@@ -8,5 +8,4 @@ import ru.itis.homework5.R
 
 open class BaseFragment(layoutId: Int): Fragment(layoutId) {
     protected open var composeView: ComposeView? = null
-
 }

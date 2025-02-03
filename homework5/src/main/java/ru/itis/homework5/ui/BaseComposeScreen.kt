@@ -69,7 +69,7 @@ fun SimpleOutlinedTextFieldSample(
     )
     if (isError) { // Показываем текст ошибки
         Text(
-            text = "Поле не может быть пустым!",
+            text = stringResource(R.string.field_cannot_be_empty),
             color = Color.Red,
             modifier = Modifier.padding(start = 16.dp, top = 4.dp)
         )
@@ -83,12 +83,12 @@ fun RadioButtonSingleSelection(
     selectedValue: String,
     onValueChange: (String) -> Unit
 ) {
-    val radioOptions = listOf("Sequentially", "Parallel")
+    val radioOptions = listOf(stringResource(id = R.string.sequentially), stringResource(id = R.string.parallel))
     var selectedOption = rememberUpdatedState(selectedValue)
     // Note that Modifier.selectableGroup() is essential to ensure correct accessibility behavior
     Column(modifier.selectableGroup()) {
         Text(
-            text = "How will coroutines be launched?",
+            text = stringResource(id = R.string.how_will_coroutines_be_launched),
             color = colorResource(id = R.color.black),
             modifier = Modifier
                 .padding(start = 16.dp, end = 16.dp, top = 30.dp)
@@ -137,12 +137,12 @@ fun RadioButtonLogicalSelection(
     selectedValue: String,
     onValueChange: (String) -> Unit
 ){
-    val radioOptions = listOf("Cancel", "Continue")
+    val radioOptions = listOf(stringResource(id = R.string.cancel), stringResource(id = R.string.Continue))
     var selectedOption = rememberUpdatedState(selectedValue)
     // Note that Modifier.selectableGroup() is essential to ensure correct accessibility behavior
     Column(modifier.selectableGroup()) {
         Text (
-            text = "What is the logic behind how coroutines work?",
+            text = stringResource(id = R.string.logic_how_coroutines_work),
             color = colorResource(id = R.color.black),
             modifier = Modifier
                 .padding(start = 16.dp, end = 16.dp, top = 30.dp)
@@ -194,7 +194,7 @@ fun ThreadPool(
         .width(200.dp)
         .wrapContentSize(Alignment.Center)
     ) {
-        val list = listOf("Default", "Main", "Unconfined", "IO")
+        val list = listOf(stringResource(R.string.Default), stringResource(R.string.main), stringResource(R.string.Unconfined), stringResource(R.string.IO))
         var currentValue = remember { mutableStateOf(list[0]) }
         val expanded = remember { mutableStateOf(false) }
 
@@ -243,7 +243,7 @@ fun LaunchButtonExample(
 ) {
     OutlinedButton(onClick = { onBottonClick() },
         modifier = Modifier.size(width = 170.dp , height = 40.dp)) {
-        Text("Launch")
+        Text(stringResource(id = R.string.launch))
     }
 }
 
@@ -253,7 +253,7 @@ fun CancelButtonExample(
 ) { //здесь надо передать функцию onBottonClick()
     OutlinedButton(onClick = { onBottonClick() },
         modifier = Modifier.size(width = 170.dp , height = 40.dp)) {
-        Text("Cancel")
+        Text(stringResource(id = R.string.cancel))
     }
 }
 

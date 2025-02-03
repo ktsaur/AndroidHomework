@@ -2,5 +2,24 @@
     <string name="app_name">homework5</string>
     <string name="sample">ComposeSample</string>
     <string name="number_of_coroutines">Enter the number of coroutines</string>
+    <string name="permissions">Разерешения</string>
+    <string name="allow_notifications">Разрешите отправку уведомлений</string>
+    <string name="open_settings">Открыть настройки</string>
+    <string name="sequentially">Sequentially</string>
+    <string name="cancel">Cancel</string>
+    <string name="Default">Default</string>
+    <string name="Continue">Continue</string>
+    <string name="main">Main</string>
+    <string name="Unconfined">Unconfined</string>
+    <string name="IO">IO</string>
+    <string name="launch">Launch</string>
+    <string name="parallel">Parallel</string>
+    <string name="error_starting_coroutine">Ошибка запуска корутин</string>
+    <string name="coroutines_were_not_running">Корутины не были запущены</string>
+    <string name="canceled_coroutines_count">Количество корутин, которое было отменено: %1$d</string>
+    <string name="field_cannot_be_empty">Поле не может быть пустым!</string>
+    <string name="how_will_coroutines_be_launched"> How will coroutines be launched?</string>
+    <string name="logic_how_coroutines_work">What is the logic behind how coroutines work?</string>
+
 
 </resources>
