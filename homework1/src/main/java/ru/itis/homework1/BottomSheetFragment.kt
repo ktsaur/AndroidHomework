@@ -23,7 +23,6 @@ class BottomSheetFragment : BottomSheetDialogFragment(R.layout.fragment_bottom_s
 
     fun initViews() {
         binding?.apply {
-
             btnSubmit.isEnabled = false
 
             inputText.addTextChangedListener {

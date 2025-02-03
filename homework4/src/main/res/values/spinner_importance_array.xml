@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="importance_array">
+        <item>Max</item>
+        <item>Hight</item>
+        <item>Default</item>
+        <item>Low</item>
+    </string-array>
+</resources>
