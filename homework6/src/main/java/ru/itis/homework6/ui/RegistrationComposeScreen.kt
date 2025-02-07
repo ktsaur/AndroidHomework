@@ -37,14 +37,40 @@ fun RegistrationText() {
 
 @Preview
 @Composable
-fun EmailTextField() {
-    var email by rememberSaveable { mutableStateOf("") }
+fun EmailTextField(
+    value: String,
+    onValueChange: (String) -> Unit
+) {
+    var email by rememberSaveable { mutableStateOf(value) }
 
     OutlinedTextField(
         value = email,
-        onValueChange = { email = it },
+        onValueChange = {
+            email = it
+            onValueChange(it)},
         label = { Text(text = "Email") },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+        modifier = Modifier
+            .padding(start = 16.dp, end = 16.dp, top = 20.dp)
+            .width(250.dp)
+    )
+}
+
+@Preview
+@Composable
+fun PhoneTextField(
+    value: String,
+    onValueChange: (String) -> Unit
+) {
+    var phone by rememberSaveable { mutableStateOf(value) }
+
+    OutlinedTextField(
+        value = phone,
+        onValueChange = {
+            phone = it
+            onValueChange(it)},
+        label = { Text(text = "Phone") },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp, top = 20.dp)
             .width(250.dp)

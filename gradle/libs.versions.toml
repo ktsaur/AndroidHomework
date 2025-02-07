@@ -36,6 +36,7 @@ androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", vers
 androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
 room =  { group = "androidx.room", name = "room-runtime", version.ref = "room_version" }
 room-ksp = {group = "androidx.room", name = "room-compiler", version.ref = "room_version"}
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room_version"}
 
 [bundles]
 compose-base = ["compose-foundation", "compose_ui", "compose_material"]

@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -42,13 +43,18 @@ fun AuthorisationText() {
 
 @Preview
 @Composable
-fun LoginTextField() {
-    var text by remember { mutableStateOf("") }
+fun UsernameTextField(
+    value: String,
+    onValueChange: (String) -> Unit
+) {
+    var text by remember { mutableStateOf(value) }
 
     OutlinedTextField(
         value = text,
-        onValueChange = { text = it },
-        label = { Text(text = "Login") },
+        onValueChange = {
+            text = it
+            onValueChange(it)},
+        label = { Text(text = "Username") },
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp, top = 70.dp)
             .width(250.dp)
@@ -57,12 +63,17 @@ fun LoginTextField() {
 
 @Preview
 @Composable
-fun PasswordTextField() {
-    var password by rememberSaveable { mutableStateOf("") }
+fun PasswordTextField(
+    value: String,
+    onValueChange: (String) -> Unit
+) {
+    var password by rememberSaveable { mutableStateOf(value) }
 
     OutlinedTextField(
         value = password,
-        onValueChange = { password = it },
+        onValueChange = {
+            password = it
+            onValueChange(it)},
         label = { Text(text = "Password") },
         visualTransformation = PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
