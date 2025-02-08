@@ -65,6 +65,10 @@ class AuthorizationFragment:BaseFragment(R.layout.fragment_authorisation) {
     }
 
     fun login() { //тут надо проверить, если пользователь есть в системе, то отправляем на главную страницу, если нет то выходит ошибка
+        if (username.isEmpty() ||  password.isEmpty()) {
+            Toast.makeText(context, "All fields must be filled in!", Toast.LENGTH_SHORT).show()
+            return
+        }
         lifecycleScope.launch {
             val user = userRepository.getUserByUsernameAndPassword(username = username, password = password)
             if (user != null) {

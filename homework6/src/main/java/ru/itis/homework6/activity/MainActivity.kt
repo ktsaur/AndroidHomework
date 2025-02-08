@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun isUserLoggedIn(): Boolean {
-        val sp = getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
-        return sp.getBoolean("is_logged_in", false)
+        val sharedPreference = getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
+        return sharedPreference.getBoolean("is_logged_in", false)
     }
 }

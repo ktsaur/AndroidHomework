@@ -22,10 +22,10 @@ import ru.itis.homework6.data.db.entities.SongEntity
 import ru.itis.homework6.databinding.FragmentMainBinding
 import ru.itis.homework6.di.ServiceLocator
 import ru.itis.homework6.ui.AddSongButton
+import ru.itis.homework6.ui.BottomSheetDemo
+import ru.itis.homework6.ui.LogoutButton
 import ru.itis.homework6.ui.MainText
-import ru.itis.homework6.ui.ProfileButton
 import ru.itis.homework6.ui.SongsList
-import java.util.UUID
 
 class MainFragment: BaseFragment(R.layout.fragment_main) {
     private val userRepository = ServiceLocator.getUserRepository()
@@ -44,15 +44,16 @@ class MainFragment: BaseFragment(R.layout.fragment_main) {
     fun initViews() {
         viewBinding.composeContainerId.setContent {
             Scaffold { padding ->
+                BottomSheetDemo(onDelete = { delete() },
+                    onLogOut = {logout()})
                 Column {
                     Row (modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ){
                         MainText()
-                        ProfileButton { profile() }
+//                        LogoutButton { logout() }
                         AddSongButton { addSong() }
                     }
-//                    MainText()
                     Column {
                         val listState = rememberLazyListState()
                         for(song in list) {
@@ -86,9 +87,31 @@ class MainFragment: BaseFragment(R.layout.fragment_main) {
         }
     }
 
-    fun profile() {
+    fun logout(){
+        val sharedPreferences = requireContext().getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
+        sharedPreferences.edit().clear().apply()
+
         parentFragmentManager.beginTransaction()
-            .replace(R.id.container, ProfileFragment())
+            .replace(R.id.container, AuthorizationFragment())
+            .addToBackStack(null)
+            .commit()
+    }
+
+    fun delete() {
+        val userId = getUserId() ?: throw IllegalStateException("UserId is null")
+        lifecycleScope.launch {
+            val user = userRepository.getUserById(userId)
+            if (user != null) {
+                userRepository.deleteUser(user = user)
+                Toast.makeText(context, "User ${user.username} deleted.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        val sharedPreferences = requireContext().getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
+        sharedPreferences.edit().clear().apply()
+
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.container, AuthorizationFragment())
             .addToBackStack(null)
             .commit()
     }

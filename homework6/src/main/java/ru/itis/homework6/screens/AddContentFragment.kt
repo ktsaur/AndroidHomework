@@ -75,7 +75,10 @@ class AddContentFragment: BaseFragment(R.layout.fragment_add_content) {
 
     fun addSong() {
         val userId = getUserId() ?: throw IllegalStateException("UserId is null")
-
+        if (title.isEmpty() ||  singer.isEmpty() || author.isEmpty() ||  genre.isEmpty()) {
+            Toast.makeText(context, "All fields must be filled in!", Toast.LENGTH_SHORT).show()
+            return
+        }
         lifecycleScope.launch {
             val song = SongEntity(
                 songId = UUID.randomUUID().toString(),

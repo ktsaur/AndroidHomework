@@ -8,7 +8,7 @@ import ru.itis.homework6.data.db.migrations.Migration_1_2
 import ru.itis.homework6.data.db.repository.UserRepository
 
 
-object ServiceLocator {
+object ServiceLocator { //реализация паттерна синглтон
 
     private const val DATABASE_NAME = "InceptionDB"
 

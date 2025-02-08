@@ -4,16 +4,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -21,18 +27,18 @@ import androidx.compose.ui.unit.sp
 
 @Preview
 @Composable
-fun AddContentText() {
-    Text(text = "Add new song", fontWeight = FontWeight.Thin,
+fun AuthorisationText() {
+    Text(text = "Authorization", fontWeight = FontWeight.Thin,
         modifier = Modifier
             .fillMaxWidth(1f)
-            .padding(top = 30.dp),
+            .padding(top = 100.dp),
         fontSize = 28.sp,
         textAlign = TextAlign.Center)
 }
 
 @Preview
 @Composable
-fun TitleTextField(
+fun UsernameTextField(
     value: String,
     onValueChange: (String) -> Unit
 ) {
@@ -43,66 +49,29 @@ fun TitleTextField(
         onValueChange = {
             text = it
             onValueChange(it)},
-        label = { Text(text = "Title") },
+        label = { Text(text = "Username") },
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp, top = 70.dp)
             .width(250.dp)
     )
 }
-@Preview
-@Composable
-fun SingerTextField(
-    value: String,
-    onValueChange: (String) -> Unit
-) {
-    var text by remember { mutableStateOf(value) }
-
-    OutlinedTextField(
-        value = text,
-        onValueChange = {
-            text = it
-            onValueChange(it)},
-        label = { Text(text = "Singer") },
-        modifier = Modifier
-            .padding(start = 16.dp, end = 16.dp, top = 20.dp)
-            .width(250.dp)
-    )
-}
-@Preview
-@Composable
-fun AuthorTextField(
-    value: String,
-    onValueChange: (String) -> Unit
-) {
-    var text by remember { mutableStateOf(value) }
-
-    OutlinedTextField(
-        value = text,
-        onValueChange = {
-            text = it
-            onValueChange(it)},
-        label = { Text(text = "Author") },
-        modifier = Modifier
-            .padding(start = 16.dp, end = 16.dp, top = 20.dp)
-            .width(250.dp)
-    )
-}
-
 
 @Preview
 @Composable
-fun GenreTextField(
+fun PasswordTextField(
     value: String,
     onValueChange: (String) -> Unit
 ) {
-    var text by remember { mutableStateOf(value) }
+    var password by remember { mutableStateOf(value) }
 
     OutlinedTextField(
-        value = text,
+        value = password,
         onValueChange = {
-            text = it
+            password = it
             onValueChange(it)},
-        label = { Text(text = "Genre") },
+        label = { Text(text = "Password") },
+        visualTransformation = PasswordVisualTransformation(),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp, top = 20.dp)
             .width(250.dp)
@@ -111,13 +80,28 @@ fun GenreTextField(
 
 @Preview
 @Composable
-fun AddNewSongButton(onClick: () -> Unit) {
+fun LoginButton(onClick: () -> Unit) {
     FilledTonalButton(
         onClick = { onClick() },
         shape = RoundedCornerShape(15.dp),
-        modifier = Modifier.padding(top = 50.dp)
+        modifier = Modifier.padding(top = 70.dp)
     ) {
-        Text("Add new song")
+        Text("Login")
     }
 }
 
+@Preview
+@Composable
+fun RegistrationTextButton(onClick: () -> Unit) {
+    TextButton(
+        onClick = { onClick() },
+        modifier = Modifier
+            .fillMaxWidth(1f)
+            .padding(top = 5.dp)
+    ) {
+        Text(text = "Register",
+            fontWeight = FontWeight.Thin,
+            textAlign = TextAlign.Center,
+            color = Color.Black)
+    }
+}

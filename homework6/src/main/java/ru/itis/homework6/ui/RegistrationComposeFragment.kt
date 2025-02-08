@@ -1,6 +1,5 @@
 package ru.itis.homework6.ui
 
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -9,7 +8,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.material.TextField
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,23 +15,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Preview
 @Composable
-fun AuthorisationText() {
-    Text(text = "Authorization", fontWeight = FontWeight.Thin,
+fun RegistrationText() {
+    Text(text = "Registration", fontWeight = FontWeight.Thin,
         modifier = Modifier
             .fillMaxWidth(1f)
             .padding(top = 100.dp),
@@ -43,40 +37,19 @@ fun AuthorisationText() {
 
 @Preview
 @Composable
-fun UsernameTextField(
+fun EmailTextField(
     value: String,
     onValueChange: (String) -> Unit
 ) {
-    var text by remember { mutableStateOf(value) }
+    var email by remember { mutableStateOf(value) }
 
     OutlinedTextField(
-        value = text,
+        value = email,
         onValueChange = {
-            text = it
+            email = it
             onValueChange(it)},
-        label = { Text(text = "Username") },
-        modifier = Modifier
-            .padding(start = 16.dp, end = 16.dp, top = 70.dp)
-            .width(250.dp)
-    )
-}
-
-@Preview
-@Composable
-fun PasswordTextField(
-    value: String,
-    onValueChange: (String) -> Unit
-) {
-    var password by rememberSaveable { mutableStateOf(value) }
-
-    OutlinedTextField(
-        value = password,
-        onValueChange = {
-            password = it
-            onValueChange(it)},
-        label = { Text(text = "Password") },
-        visualTransformation = PasswordVisualTransformation(),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        label = { Text(text = "Email") },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp, top = 20.dp)
             .width(250.dp)
@@ -85,7 +58,28 @@ fun PasswordTextField(
 
 @Preview
 @Composable
-fun LoginButton(onClick: () -> Unit) {
+fun PhoneTextField(
+    value: String,
+    onValueChange: (String) -> Unit
+) {
+    var phone by remember { mutableStateOf(value) }
+
+    OutlinedTextField(
+        value = phone,
+        onValueChange = {
+            phone = it
+            onValueChange(it)},
+        label = { Text(text = "Phone") },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+        modifier = Modifier
+            .padding(start = 16.dp, end = 16.dp, top = 20.dp)
+            .width(250.dp)
+    )
+}
+
+@Preview
+@Composable
+fun RegistrationButton(onClick: () -> Unit) {
     FilledTonalButton(
         onClick = { onClick() },
         shape = RoundedCornerShape(15.dp),
@@ -97,14 +91,14 @@ fun LoginButton(onClick: () -> Unit) {
 
 @Preview
 @Composable
-fun RegistrationTextButton(onClick: () -> Unit) {
+fun AuthorizationTextButton(onClick: () -> Unit) {
     TextButton(
         onClick = { onClick() },
         modifier = Modifier
             .fillMaxWidth(1f)
             .padding(top = 5.dp)
     ) {
-        Text(text = "Register",
+        Text(text = "Зарегистрироваться",
             fontWeight = FontWeight.Thin,
             textAlign = TextAlign.Center,
             color = Color.Black)

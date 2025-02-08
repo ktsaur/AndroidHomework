@@ -43,4 +43,22 @@ class UserRepository(
             songDao.deleteSong(song = song)
         }
     }
+
+    suspend fun getUserById(id: String): UserEntity? {
+        return withContext(ioDispatcher){
+            userDao.getUserByUserId(id = id)
+        }
+    }
+
+    suspend fun deleteUser(user: UserEntity){
+        return withContext(ioDispatcher) {
+            userDao.deleteUser(user = user)
+        }
+    }
+
+    suspend fun updateUserInfo(userId: String, username: String, email: String, phone: String, password: String) {
+        return withContext(ioDispatcher) {
+            userDao.updateUserInfo(userId, username, email, phone, password)
+        }
+    }
 }

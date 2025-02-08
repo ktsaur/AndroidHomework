@@ -79,6 +79,10 @@ class RegistrationFragment: BaseFragment(R.layout.fragment_registration) {
     }
 
     fun registration() {
+        if (username.isEmpty() || email.isEmpty() || phone.isEmpty() || password.isEmpty()) {
+            Toast.makeText(context, "All fields must be filled in!", Toast.LENGTH_SHORT).show()
+            return
+        }
         lifecycleScope.launch {
             val user = userRepository.getUserByUsernameAndPassword(username = username, password = password)
             if (user == null) {
@@ -90,10 +94,9 @@ class RegistrationFragment: BaseFragment(R.layout.fragment_registration) {
                     password = password
                 )
                 userRepository.saveUser(newUser)
-                saveUserId(newUser.userId)
 
                 parentFragmentManager.beginTransaction()
-                    .replace(R.id.container, MainFragment())
+                    .replace(R.id.container, AuthorizationFragment())
                     .addToBackStack(null)
                     .commit()
 
@@ -101,14 +104,6 @@ class RegistrationFragment: BaseFragment(R.layout.fragment_registration) {
             } else {
                 Toast.makeText(context, "User already exists", Toast.LENGTH_SHORT).show()
             }
-        }
-    }
-
-     fun saveUserId(userId: String) {
-        val sharedPreference = requireContext().getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
-        with(sharedPreference.edit()) {
-            putString("user_id", userId)
-            apply()
         }
     }
 
