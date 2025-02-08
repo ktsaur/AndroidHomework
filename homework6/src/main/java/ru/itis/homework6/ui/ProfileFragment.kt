@@ -72,7 +72,7 @@ fun BottomSheetDemo(
     ) { contentPadding ->
         Box(modifier = Modifier.padding(contentPadding)) {}
         if (showBottomSheet) {
-            ModalBottomSheet(
+            ModalBottomSheet (
                 onDismissRequest = {
                     showBottomSheet = false
                 },
