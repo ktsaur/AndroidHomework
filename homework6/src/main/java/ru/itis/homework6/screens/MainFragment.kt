@@ -3,6 +3,7 @@ package ru.itis.homework6.screens
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,9 +37,6 @@ class MainFragment: BaseFragment(R.layout.fragment_main) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val userId = arguments?.getString("USER_ID") ?: throw IllegalStateException("UserId is null")
-        Log.i("MainFragment--TAG", "userId = $userId")
-
         getAllSongs()
         initViews()
     }
@@ -67,9 +65,7 @@ class MainFragment: BaseFragment(R.layout.fragment_main) {
         }
     }
     fun getAllSongs(){
-        val userId = arguments?.getString("USER_ID") ?: throw IllegalStateException("UserId is null")
-        Log.i("MainFragment--TAG", "userId = $userId")
-
+        val userId = getUserId() ?: throw IllegalStateException("UserId is null")
         lifecycleScope.launch {
             list = userRepository.getAllUserSongs(user_id = userId)
             Log.i("MainFragment--TAG", "list is empty? - ${list.isEmpty()}")
@@ -77,33 +73,29 @@ class MainFragment: BaseFragment(R.layout.fragment_main) {
     }
 
     fun addSong() {
-        val userId = arguments?.getString("USER_ID") ?: throw IllegalStateException("UserId is null")
-
-        val addContentFragment = AddContentFragment().apply {
-            arguments = AddContentFragment().bindle(userId)
-        }
         parentFragmentManager.beginTransaction()
-            .replace(R.id.container, addContentFragment)
+            .replace(R.id.container, AddContentFragment())
             .addToBackStack(null)
             .commit()
+    }
+
+    fun removeSong(song: SongEntity) {
+        lifecycleScope.launch {
+            userRepository.deleteSong(song = song)
+            Toast.makeText(context, "Song deleted!", Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun profile() {
-        val userId = arguments?.getString("USER_ID") ?: throw IllegalStateException("UserId is null")
-
-        val profileFragment = ProfileFragment().apply {
-            arguments = ProfileFragment().bundle(
-                userId = userId
-            )
-        }
-
         parentFragmentManager.beginTransaction()
-            .replace(R.id.container, profileFragment)
+            .replace(R.id.container, ProfileFragment())
             .addToBackStack(null)
             .commit()
     }
 
-    fun bundle(userId: String): Bundle = Bundle().apply {
-        putString("USER_ID", userId)
+    fun getUserId(): String?{
+        val sharedPreference = requireContext().getSharedPreferences("user_prefs",  android.content.Context.MODE_PRIVATE)
+        return sharedPreference.getString("user_id", null)
     }
+
 }

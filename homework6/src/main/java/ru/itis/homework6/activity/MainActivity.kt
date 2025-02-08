@@ -7,6 +7,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import ru.itis.homework6.R
 import ru.itis.homework6.screens.AuthorizationFragment
+import ru.itis.homework6.screens.MainFragment
 import ru.itis.homework6.screens.RegistrationFragment
 
 class MainActivity : AppCompatActivity() {
@@ -15,8 +16,19 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.container, AuthorizationFragment())
-            .commit()
+        if(isUserLoggedIn()) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, MainFragment())
+                .commit()
+        } else {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, AuthorizationFragment())
+                .commit()
+        }
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        val sp = getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
+        return sp.getBoolean("is_logged_in", false)
     }
 }

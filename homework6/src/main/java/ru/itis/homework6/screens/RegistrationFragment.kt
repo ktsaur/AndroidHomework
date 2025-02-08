@@ -90,14 +90,10 @@ class RegistrationFragment: BaseFragment(R.layout.fragment_registration) {
                     password = password
                 )
                 userRepository.saveUser(newUser)
+                saveUserId(newUser.userId)
 
-                val mainFragment = MainFragment().apply {
-                    arguments = MainFragment().bundle(
-                        userId = newUser.userId
-                    )
-                }
                 parentFragmentManager.beginTransaction()
-                    .replace(R.id.container, mainFragment)
+                    .replace(R.id.container, MainFragment())
                     .addToBackStack(null)
                     .commit()
 
@@ -105,6 +101,14 @@ class RegistrationFragment: BaseFragment(R.layout.fragment_registration) {
             } else {
                 Toast.makeText(context, "User already exists", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+     fun saveUserId(userId: String) {
+        val sharedPreference = requireContext().getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
+        with(sharedPreference.edit()) {
+            putString("user_id", userId)
+            apply()
         }
     }
 

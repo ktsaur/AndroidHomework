@@ -68,13 +68,10 @@ class AuthorizationFragment:BaseFragment(R.layout.fragment_authorisation) {
         lifecycleScope.launch {
             val user = userRepository.getUserByUsernameAndPassword(username = username, password = password)
             if (user != null) {
-                val mainFragment = MainFragment().apply {
-                    arguments = MainFragment().bundle(
-                        userId = user.userId
-                    )
-                }
+                saveAuthorizationState(isLoggedIn = true)
+                saveUserId(user.userId)
                 parentFragmentManager.beginTransaction()
-                    .replace(R.id.container, mainFragment)
+                    .replace(R.id.container, MainFragment())
                     .addToBackStack(null)
                     .commit()
 
@@ -82,6 +79,22 @@ class AuthorizationFragment:BaseFragment(R.layout.fragment_authorisation) {
             } else {
                 Toast.makeText(context, "The user does not exist.", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    fun saveAuthorizationState(isLoggedIn: Boolean) {
+        val sharedPreference = requireContext().getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
+        with(sharedPreference.edit()) {
+            putBoolean("is_logged_in", isLoggedIn)
+            apply()
+        }
+    }
+
+    fun saveUserId(userId: String) {
+        val sharedPreference = requireContext().getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
+        with(sharedPreference.edit()) {
+            putString("user_id", userId)
+            apply()
         }
     }
 

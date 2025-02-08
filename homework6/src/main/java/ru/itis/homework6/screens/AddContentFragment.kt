@@ -74,7 +74,7 @@ class AddContentFragment: BaseFragment(R.layout.fragment_add_content) {
     }
 
     fun addSong() {
-        val userId = arguments?.getString("USER_ID") ?: throw IllegalStateException("UserId is null")
+        val userId = getUserId() ?: throw IllegalStateException("UserId is null")
 
         lifecycleScope.launch {
             val song = SongEntity(
@@ -88,17 +88,16 @@ class AddContentFragment: BaseFragment(R.layout.fragment_add_content) {
             userRepository.saveSong(song)
             Toast.makeText(context, "Song added successfully!", Toast.LENGTH_SHORT).show()
 
-            val mainFragment = MainFragment().apply {
-                arguments = MainFragment().bundle(userId = userId)
-            }
             parentFragmentManager.beginTransaction()
-                .replace(R.id.container, mainFragment)
+                .replace(R.id.container, MainFragment())
                 .addToBackStack(null)
                 .commit()
         }
     }
 
-    fun bindle(userId: String): Bundle = Bundle().apply {
-        putString("USER_ID", userId)
+    fun getUserId(): String?{
+        val sharedPreference = requireContext().getSharedPreferences("user_prefs",  android.content.Context.MODE_PRIVATE)
+        return sharedPreference.getString("user_id", null)
     }
+
 }
