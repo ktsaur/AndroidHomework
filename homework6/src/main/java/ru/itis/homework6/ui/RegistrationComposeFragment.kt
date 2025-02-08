@@ -13,21 +13,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ru.itis.homework6.R
 
 @Preview
 @Composable
-fun RegistrationText() {
-    Text(text = "Registration", fontWeight = FontWeight.Thin,
+fun Text(text: String) {
+    Text(text = text, fontWeight = FontWeight.Thin,
         modifier = Modifier
             .fillMaxWidth(1f)
             .padding(top = 100.dp),
@@ -37,45 +38,27 @@ fun RegistrationText() {
 
 @Preview
 @Composable
-fun EmailTextField(
+fun TextField(
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    label: String,
+    keyboardType: KeyboardType
 ) {
-    var email by remember { mutableStateOf(value) }
+    var text by remember { mutableStateOf(value) }
 
     OutlinedTextField(
-        value = email,
+        value = text,
         onValueChange = {
-            email = it
+            text = it
             onValueChange(it)},
-        label = { Text(text = "Email") },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+        label = { Text(text = label) },
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp, top = 20.dp)
             .width(250.dp)
     )
 }
 
-@Preview
-@Composable
-fun PhoneTextField(
-    value: String,
-    onValueChange: (String) -> Unit
-) {
-    var phone by remember { mutableStateOf(value) }
-
-    OutlinedTextField(
-        value = phone,
-        onValueChange = {
-            phone = it
-            onValueChange(it)},
-        label = { Text(text = "Phone") },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-        modifier = Modifier
-            .padding(start = 16.dp, end = 16.dp, top = 20.dp)
-            .width(250.dp)
-    )
-}
 
 @Preview
 @Composable
@@ -85,7 +68,7 @@ fun RegistrationButton(onClick: () -> Unit) {
         shape = RoundedCornerShape(15.dp),
         modifier = Modifier.padding(top = 70.dp)
     ) {
-        Text("Login")
+        Text(text = stringResource(id = R.string.register))
     }
 }
 
@@ -98,7 +81,7 @@ fun AuthorizationTextButton(onClick: () -> Unit) {
             .fillMaxWidth(1f)
             .padding(top = 5.dp)
     ) {
-        Text(text = "Зарегистрироваться",
+        Text(text = stringResource(id = R.string.login_to_existing_account),
             fontWeight = FontWeight.Thin,
             textAlign = TextAlign.Center,
             color = Color.Black)

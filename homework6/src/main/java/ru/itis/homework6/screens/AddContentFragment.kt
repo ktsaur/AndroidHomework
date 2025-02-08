@@ -20,13 +20,11 @@ import ru.itis.homework6.data.db.entities.SongEntity
 import ru.itis.homework6.databinding.FragmentAddContentBinding
 import ru.itis.homework6.di.ServiceLocator
 import ru.itis.homework6.ui.AddContentText
+import ru.itis.homework6.ui.AddContentTextField
 import ru.itis.homework6.ui.AddNewSongButton
-import ru.itis.homework6.ui.AuthorTextField
-import ru.itis.homework6.ui.GenreTextField
-import ru.itis.homework6.ui.SingerTextField
-import ru.itis.homework6.ui.TitleTextField
+import ru.itis.homework6.util.PreferencesKeys
 import java.util.UUID
-import kotlin.math.sin
+
 
 class AddContentFragment: BaseFragment(R.layout.fragment_add_content) {
     private val userRepository = ServiceLocator.getUserRepository()
@@ -35,7 +33,7 @@ class AddContentFragment: BaseFragment(R.layout.fragment_add_content) {
 
     private var title by mutableStateOf("")
     private var singer by mutableStateOf("")
-    private var author by mutableStateOf("")
+    private var composer by mutableStateOf("")
     private var genre by mutableStateOf("")
 
 
@@ -51,22 +49,26 @@ class AddContentFragment: BaseFragment(R.layout.fragment_add_content) {
                Column(modifier = Modifier.fillMaxSize(),
                    horizontalAlignment = Alignment.CenterHorizontally) {
                    AddContentText()
-                   TitleTextField(value = title,
+                   AddContentTextField(value = title,
                        onValueChange = {newValue ->
                            title = newValue
-                       })
-                   SingerTextField(value = singer,
+                       },
+                       label = getString(R.string.title))
+                   AddContentTextField(value = singer,
                        onValueChange = {newValue ->
                            singer = newValue
-                       })
-                   AuthorTextField(value = author,
-                       onValueChange =  {newValue ->
-                           author = newValue
-                       })
-                   GenreTextField(value = genre,
-                       onValueChange =  {newValue ->
+                       },
+                       label = getString(R.string.singer))
+                   AddContentTextField(value = composer,
+                       onValueChange = {newValue ->
+                           composer = newValue
+                       },
+                       label = getString(R.string.composer))
+                   AddContentTextField(value = genre,
+                       onValueChange = {newValue ->
                            genre = newValue
-                       })
+                       },
+                       label = getString(R.string.genre))
                    AddNewSongButton {addSong()}
                }
             }
@@ -74,9 +76,9 @@ class AddContentFragment: BaseFragment(R.layout.fragment_add_content) {
     }
 
     fun addSong() {
-        val userId = getUserId() ?: throw IllegalStateException("UserId is null")
-        if (title.isEmpty() ||  singer.isEmpty() || author.isEmpty() ||  genre.isEmpty()) {
-            Toast.makeText(context, "All fields must be filled in!", Toast.LENGTH_SHORT).show()
+        val userId = getUserId() ?: throw IllegalStateException(context?.getString(R.string.userId_is_null))
+        if (title.isEmpty() ||  singer.isEmpty() || composer.isEmpty() ||  genre.isEmpty()) {
+            Toast.makeText(context, context?.getString(R.string.fields_filled), Toast.LENGTH_SHORT).show()
             return
         }
         lifecycleScope.launch {
@@ -85,11 +87,11 @@ class AddContentFragment: BaseFragment(R.layout.fragment_add_content) {
                 userId = userId,
                 title = title,
                 singer = singer,
-                author = author,
+                composer = composer,
                 genre = genre
             )
             userRepository.saveSong(song)
-            Toast.makeText(context, "Song added successfully!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context?.getString(R.string.song_added), Toast.LENGTH_SHORT).show()
 
             parentFragmentManager.beginTransaction()
                 .replace(R.id.container, MainFragment())
@@ -99,8 +101,13 @@ class AddContentFragment: BaseFragment(R.layout.fragment_add_content) {
     }
 
     fun getUserId(): String?{
-        val sharedPreference = requireContext().getSharedPreferences("user_prefs",  android.content.Context.MODE_PRIVATE)
-        return sharedPreference.getString("user_id", null)
+        val sharedPreference = requireContext().getSharedPreferences(PreferencesKeys.USER_PREFS,  android.content.Context.MODE_PRIVATE)
+        return sharedPreference.getString(PreferencesKeys.USER_ID, null)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        composeView = null
     }
 
 }

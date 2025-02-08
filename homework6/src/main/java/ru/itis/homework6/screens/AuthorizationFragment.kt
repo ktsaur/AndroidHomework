@@ -4,27 +4,30 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import kotlinx.coroutines.launch
 import ru.itis.homework6.R
-import ru.itis.homework6.data.db.InceptionDatabase
-import ru.itis.homework6.data.db.repository.UserRepository
 import ru.itis.homework6.databinding.FragmentAuthorisationBinding
 import ru.itis.homework6.di.ServiceLocator
-import ru.itis.homework6.ui.AuthorisationText
 import ru.itis.homework6.ui.LoginButton
-import ru.itis.homework6.ui.MainText
 import ru.itis.homework6.ui.PasswordTextField
 import ru.itis.homework6.ui.RegistrationTextButton
-import ru.itis.homework6.ui.UsernameTextField
+import ru.itis.homework6.ui.Text
+import ru.itis.homework6.ui.TextField
+import ru.itis.homework6.util.PreferencesKeys
 
 class AuthorizationFragment:BaseFragment(R.layout.fragment_authorisation) {
     private val userRepository = ServiceLocator.getUserRepository()
@@ -46,11 +49,14 @@ class AuthorizationFragment:BaseFragment(R.layout.fragment_authorisation) {
                 Column (modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally)
                 {
-                    AuthorisationText()
-                    UsernameTextField(
+                    Text(text = "Authorization")
+                    Spacer(modifier = Modifier.height(70.dp))
+                    TextField(
                         value = username,
                         onValueChange = { newValue ->
-                            username = newValue }
+                            username = newValue },
+                        label = getString(R.string.username),
+                        keyboardType = KeyboardType.Text
                     )
                     PasswordTextField(
                         value = password,
@@ -66,7 +72,7 @@ class AuthorizationFragment:BaseFragment(R.layout.fragment_authorisation) {
 
     fun login() { //тут надо проверить, если пользователь есть в системе, то отправляем на главную страницу, если нет то выходит ошибка
         if (username.isEmpty() ||  password.isEmpty()) {
-            Toast.makeText(context, "All fields must be filled in!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context?.getString(R.string.fields_filled), Toast.LENGTH_SHORT).show()
             return
         }
         lifecycleScope.launch {
@@ -79,25 +85,25 @@ class AuthorizationFragment:BaseFragment(R.layout.fragment_authorisation) {
                     .addToBackStack(null)
                     .commit()
 
-                Toast.makeText(context, "You are logged in!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context?.getString(R.string.logged_in), Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(context, "The user does not exist.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context?.getString(R.string.user_not_exist), Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     fun saveAuthorizationState(isLoggedIn: Boolean) {
-        val sharedPreference = requireContext().getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
+        val sharedPreference = requireContext().getSharedPreferences(PreferencesKeys.USER_PREFS, android.content.Context.MODE_PRIVATE)
         with(sharedPreference.edit()) {
-            putBoolean("is_logged_in", isLoggedIn)
+            putBoolean(PreferencesKeys.IS_LOGGED_IN, isLoggedIn)
             apply()
         }
     }
 
     fun saveUserId(userId: String) {
-        val sharedPreference = requireContext().getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
+        val sharedPreference = requireContext().getSharedPreferences(PreferencesKeys.USER_PREFS, android.content.Context.MODE_PRIVATE)
         with(sharedPreference.edit()) {
-            putString("user_id", userId)
+            putString(PreferencesKeys.USER_ID, userId)
             apply()
         }
     }
@@ -107,6 +113,11 @@ class AuthorizationFragment:BaseFragment(R.layout.fragment_authorisation) {
             .replace(R.id.container, RegistrationFragment())
             .addToBackStack(null)
             .commit()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        composeView = null
     }
 
 }

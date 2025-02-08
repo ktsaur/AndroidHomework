@@ -4,13 +4,18 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import kotlinx.coroutines.launch
@@ -19,12 +24,10 @@ import ru.itis.homework6.data.db.entities.UserEntity
 import ru.itis.homework6.databinding.FragmentRegistrationBinding
 import ru.itis.homework6.di.ServiceLocator
 import ru.itis.homework6.ui.AuthorizationTextButton
-import ru.itis.homework6.ui.EmailTextField
 import ru.itis.homework6.ui.PasswordTextField
-import ru.itis.homework6.ui.PhoneTextField
 import ru.itis.homework6.ui.RegistrationButton
-import ru.itis.homework6.ui.RegistrationText
-import ru.itis.homework6.ui.UsernameTextField
+import ru.itis.homework6.ui.Text
+import ru.itis.homework6.ui.TextField
 import java.util.UUID
 
 class RegistrationFragment: BaseFragment(R.layout.fragment_registration) {
@@ -50,21 +53,28 @@ class RegistrationFragment: BaseFragment(R.layout.fragment_registration) {
                 Column (modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally)
                 {
-                    RegistrationText()
-                    UsernameTextField(
+                    Text(text = getString(R.string.registration))
+                    Spacer(modifier = Modifier.height(30.dp))
+                    TextField(
                         value = username,
                         onValueChange = { newValue ->
-                            username = newValue }
+                            username = newValue },
+                        label = getString(R.string.username),
+                        keyboardType = KeyboardType.Text
                     )
-                    EmailTextField(
+                    TextField(
                         value = email,
                         onValueChange = { newValue ->
-                            email = newValue }
+                            email = newValue },
+                        label = getString(R.string.email),
+                        keyboardType = KeyboardType.Email
                     )
-                    PhoneTextField(
+                    TextField(
                         value = phone ,
                         onValueChange = { newValue ->
-                            phone = newValue }
+                            phone = newValue },
+                        label = getString(R.string.phone),
+                        keyboardType = KeyboardType.Phone
                     )
                     PasswordTextField(
                         value = password,
@@ -80,7 +90,7 @@ class RegistrationFragment: BaseFragment(R.layout.fragment_registration) {
 
     fun registration() {
         if (username.isEmpty() || email.isEmpty() || phone.isEmpty() || password.isEmpty()) {
-            Toast.makeText(context, "All fields must be filled in!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context?.getString(R.string.fields_filled), Toast.LENGTH_SHORT).show()
             return
         }
         lifecycleScope.launch {
@@ -100,9 +110,9 @@ class RegistrationFragment: BaseFragment(R.layout.fragment_registration) {
                     .addToBackStack(null)
                     .commit()
 
-                Toast.makeText(context, "You have registered", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context?.getString(R.string.you_have_registered), Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(context, "User already exists", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context?.getString(R.string.user_exists), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -112,5 +122,10 @@ class RegistrationFragment: BaseFragment(R.layout.fragment_registration) {
             .replace(R.id.container, AuthorizationFragment())
             .addToBackStack(null)
             .commit()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        composeView = null
     }
 }

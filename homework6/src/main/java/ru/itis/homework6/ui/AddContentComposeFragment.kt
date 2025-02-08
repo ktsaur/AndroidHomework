@@ -13,16 +13,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ru.itis.homework6.R
 
 @Preview
 @Composable
 fun AddContentText() {
-    Text(text = "Add new song", fontWeight = FontWeight.Thin,
+    Text(text = stringResource(id = R.string.add_song), fontWeight = FontWeight.Thin,
         modifier = Modifier
             .fillMaxWidth(1f)
             .padding(top = 100.dp),
@@ -32,9 +34,10 @@ fun AddContentText() {
 
 @Preview
 @Composable
-fun TitleTextField(
+fun AddContentTextField(
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    label: String
 ) {
     var text by remember { mutableStateOf(value) }
 
@@ -43,66 +46,7 @@ fun TitleTextField(
         onValueChange = {
             text = it
             onValueChange(it)},
-        label = { Text(text = "Title") },
-        modifier = Modifier
-            .padding(start = 16.dp, end = 16.dp, top = 70.dp)
-            .width(250.dp)
-    )
-}
-@Preview
-@Composable
-fun SingerTextField(
-    value: String,
-    onValueChange: (String) -> Unit
-) {
-    var text by remember { mutableStateOf(value) }
-
-    OutlinedTextField(
-        value = text,
-        onValueChange = {
-            text = it
-            onValueChange(it)},
-        label = { Text(text = "Singer") },
-        modifier = Modifier
-            .padding(start = 16.dp, end = 16.dp, top = 20.dp)
-            .width(250.dp)
-    )
-}
-@Preview
-@Composable
-fun AuthorTextField(
-    value: String,
-    onValueChange: (String) -> Unit
-) {
-    var text by remember { mutableStateOf(value) }
-
-    OutlinedTextField(
-        value = text,
-        onValueChange = {
-            text = it
-            onValueChange(it)},
-        label = { Text(text = "Author") },
-        modifier = Modifier
-            .padding(start = 16.dp, end = 16.dp, top = 20.dp)
-            .width(250.dp)
-    )
-}
-
-
-@Preview
-@Composable
-fun GenreTextField(
-    value: String,
-    onValueChange: (String) -> Unit
-) {
-    var text by remember { mutableStateOf(value) }
-
-    OutlinedTextField(
-        value = text,
-        onValueChange = {
-            text = it
-            onValueChange(it)},
-        label = { Text(text = "Genre") },
+        label = { Text(text = label) },
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp, top = 20.dp)
             .width(250.dp)
@@ -117,7 +61,7 @@ fun AddNewSongButton(onClick: () -> Unit) {
         shape = RoundedCornerShape(15.dp),
         modifier = Modifier.padding(top = 50.dp)
     ) {
-        Text("Add new song")
+        Text(stringResource(id = R.string.add_new_song))
     }
 }
 

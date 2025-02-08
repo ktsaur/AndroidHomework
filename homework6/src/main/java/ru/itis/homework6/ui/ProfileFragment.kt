@@ -1,15 +1,14 @@
-/*
 package ru.itis.homework6.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import ru.itis.homework6.R
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
@@ -29,6 +28,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -42,8 +42,6 @@ import ru.itis.homework6.data.db.entities.UserEntity
 import ru.itis.homework6.data.db.repository.UserRepository
 import androidx.compose.material3.ExtendedFloatingActionButton as ExtendedFloatingActionButton1
 
-
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 @Composable
 fun BottomSheetDemo(
@@ -53,7 +51,6 @@ fun BottomSheetDemo(
     password: String,
     onSave: (String, String, String, String) -> Unit
 ) {
-
     var newUsername by remember { mutableStateOf(username) }
     var newEmail by remember { mutableStateOf(email) }
     var newPhone by remember { mutableStateOf(phone) }
@@ -65,7 +62,7 @@ fun BottomSheetDemo(
     Scaffold(
         floatingActionButton = {
             ExtendedFloatingActionButton1(
-                text = { Text("Change profile information") },
+                text = { Text(text = stringResource(id = R.string.edit_profile)) },
                 icon = { Icon(Icons.Filled.Add, contentDescription = "") },
                 onClick = {
                     showBottomSheet = true
@@ -73,11 +70,7 @@ fun BottomSheetDemo(
             )
         }
     ) { contentPadding ->
-        Box(modifier = Modifier.padding(contentPadding)) { */
-/*  *//*
- }
-
-
+        Box(modifier = Modifier.padding(contentPadding)) {}
         if (showBottomSheet) {
             ModalBottomSheet(
                 onDismissRequest = {
@@ -85,7 +78,7 @@ fun BottomSheetDemo(
                 },
                 sheetState = sheetState
             ) {
-                Text("Editing profile",
+                Text(text = stringResource(id = R.string.edit_profile),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Thin,
                     modifier = Modifier.padding(start = 16.dp))
@@ -93,26 +86,30 @@ fun BottomSheetDemo(
                 OutlinedTextField(
                     value = newUsername,
                     onValueChange = { newUsername = it },
-                    label = { Text("Username") },
-                    modifier = Modifier.padding(start = 16.dp, top = 10.dp)
+                    label = { Text(text = stringResource(id = R.string.username)) },
+                    modifier = Modifier.padding(start = 16.dp, top = 10.dp, end = 16.dp)
+                        .fillMaxWidth(1f)
                 )
                 OutlinedTextField(
                     value = newEmail,
                     onValueChange = { newEmail = it },
-                    label = { Text("Email") },
-                    modifier = Modifier.padding(start = 16.dp)
+                    label = { Text(text = stringResource(id = R.string.email)) },
+                    modifier = Modifier.padding(start = 16.dp, top = 10.dp, end = 16.dp)
+                        .fillMaxWidth(1f)
                 )
                 OutlinedTextField(
                     value = newPhone,
                     onValueChange = { newPhone = it },
-                    label = { Text("Phone") },
-                    modifier = Modifier.padding(start = 16.dp)
+                    label = { Text(text = stringResource(id = R.string.phone)) },
+                    modifier = Modifier.padding(start = 16.dp, top = 10.dp, end = 16.dp)
+                        .fillMaxWidth(1f)
                 )
                 OutlinedTextField(
                     value = newPassword,
                     onValueChange = { newPassword = it },
-                    label = { Text("Password") },
-                    modifier = Modifier.padding(start = 16.dp)
+                    label = { Text(text = stringResource(id = R.string.password)) },
+                    modifier = Modifier.padding(start = 16.dp, top = 10.dp, end = 16.dp)
+                        .fillMaxWidth(1f)
                 )
 
                 Row(
@@ -129,12 +126,21 @@ fun BottomSheetDemo(
                     },
                     modifier = Modifier.padding(top = 10.dp, start = 16.dp))
                     {
-                        Text("Cancel")
+                        Text(text = stringResource(id = R.string.cancel))
                     }
                     FilledTonalButton(shape = RoundedCornerShape(15.dp),
-                        onClick = { onSave(newUsername, newEmail, newPhone, newPassword) },
-                        modifier = Modifier.padding(top = 10.dp, end = 16.dp)
-                    ) { Text("Save") }
+                        onClick = {
+                            onSave(newUsername, newEmail, newPhone, newPassword)
+                            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                if (!sheetState.isVisible) {
+                                    showBottomSheet = false
+                                }
+                            }
+                        },
+                        modifier = Modifier.padding(top = 10.dp, end = 16.dp))
+                    {
+                        Text(text = stringResource(id = R.string.save))
+                    }
                 }
             }
         }
@@ -144,7 +150,7 @@ fun BottomSheetDemo(
 @Preview
 @Composable
 fun ProfileText() {
-    Text(text = "Profile", fontWeight = FontWeight.Thin,
+    Text(text = stringResource(id = R.string.profile), fontWeight = FontWeight.Thin,
         modifier = Modifier
             .fillMaxWidth(1f)
             .padding(top = 100.dp),
@@ -152,68 +158,47 @@ fun ProfileText() {
         textAlign = TextAlign.Center)
 }
 
-@Preview
-@Composable
-fun UsernameText(username: String) {
-    Text(text = "Username: $username",
-        modifier = Modifier
-            .fillMaxWidth(1f)
-            .padding(top = 50.dp, start = 25.dp),
-        textAlign = TextAlign.Left)
-}
 
 @Preview
 @Composable
-fun EmailText(email: String) {
-    Text(text = "Email: $email",
-        modifier = Modifier
-            .fillMaxWidth(1f)
-            .padding(top = 15.dp, start = 25.dp),
-        textAlign = TextAlign.Left)
-}
-
-@Preview
-@Composable
-fun PhoneText(phone: String) {
-    Text(text = "Phone: $phone",
-        modifier = Modifier
-            .fillMaxWidth(1f)
-            .padding(top = 15.dp, start = 25.dp),
-        textAlign = TextAlign.Left)
-}
-
-@Preview
-@Composable
-fun PasswordText(password: String) {
-    Text(text = "Password: $password",
-        modifier = Modifier
-            .fillMaxWidth(1f)
-            .padding(top = 15.dp, start = 25.dp),
-        textAlign = TextAlign.Left)
-}
-
-*/
-/*@Preview
-@Composable
-fun LogOutButton(onClick: () -> Unit) {
+fun ProfileButton(onClick: () -> Unit, text: String) {
     FilledTonalButton(
         onClick = { onClick() },
         shape = RoundedCornerShape(15.dp),
         modifier = Modifier.padding(top = 70.dp, start = 25.dp)
     ) {
-        Text("Log out")
+        Text(text)
     }
-}*//*
-
+}
 
 @Preview
 @Composable
-fun DeleteProfileButton(onClick: () -> Unit) {
-    FilledTonalButton(
-        onClick = { onClick() },
-        shape = RoundedCornerShape(15.dp),
-        modifier = Modifier.padding(top = 70.dp, end = 25.dp)
-    ) {
-        Text("Delete")
+fun ProfileScreen(userState: UserEntity?) {
+    Column(modifier = Modifier.padding(top = 50.dp, start = 25.dp)) {
+        userState?.let {
+            Text(text = "Username: ${it.username}",
+                modifier = Modifier
+                    .fillMaxWidth(1f)
+                    .padding(top = 15.dp, start = 25.dp),
+                textAlign = TextAlign.Left)
+            Text(text = "Email: ${it.email}",
+                modifier = Modifier
+                    .fillMaxWidth(1f)
+                    .padding(top = 15.dp, start = 25.dp),
+                textAlign = TextAlign.Left)
+            Text(text = "Phone: ${it.phone}",
+                modifier = Modifier
+                    .fillMaxWidth(1f)
+                    .padding(top = 15.dp, start = 25.dp),
+                textAlign = TextAlign.Left)
+            Text(text = "Password: ${it.password}",
+                modifier = Modifier
+                    .fillMaxWidth(1f)
+                    .padding(top = 15.dp, start = 25.dp),
+                textAlign = TextAlign.Left)
+        } ?: run {
+            Text(text = stringResource(id = R.string.user_not_found))
+        }
     }
-}*/
+}
+

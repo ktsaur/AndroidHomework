@@ -24,8 +24,8 @@ data class SongEntity(
     val title: String,
     @ColumnInfo(name = "singer")
     val singer: String,
-    @ColumnInfo(name = "author")
-    val author: String,
+    @ColumnInfo(name = "composer")
+    val composer: String,
     @ColumnInfo(name = "genre")
     val genre: String
 )

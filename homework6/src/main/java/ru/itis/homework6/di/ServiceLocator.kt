@@ -5,6 +5,7 @@ import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
 import ru.itis.homework6.data.db.InceptionDatabase
 import ru.itis.homework6.data.db.migrations.Migration_1_2
+import ru.itis.homework6.data.db.migrations.Migration_2_3
 import ru.itis.homework6.data.db.repository.UserRepository
 
 
@@ -18,7 +19,8 @@ object ServiceLocator { //реализация паттерна синглтон
     private fun initDatabase(ctx: Context) {
         dbInstance = Room.databaseBuilder(ctx, InceptionDatabase::class.java, DATABASE_NAME)
             .addMigrations(
-                Migration_1_2()
+                Migration_1_2(),
+                Migration_2_3()
             )
             .build()
     }

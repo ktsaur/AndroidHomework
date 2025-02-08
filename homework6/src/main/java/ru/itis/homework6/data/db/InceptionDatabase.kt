@@ -12,7 +12,7 @@ import ru.itis.homework6.data.db.entities.UserEntity
 
 @Database(
     entities = [UserEntity::class, SongEntity::class],
-    version = 2
+    version = 3
 )
 @TypeConverters(DateConverters::class)
 abstract class InceptionDatabase: RoomDatabase() {

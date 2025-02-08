@@ -9,6 +9,7 @@ import ru.itis.homework6.R
 import ru.itis.homework6.screens.AuthorizationFragment
 import ru.itis.homework6.screens.MainFragment
 import ru.itis.homework6.screens.RegistrationFragment
+import ru.itis.homework6.util.PreferencesKeys
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +29,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun isUserLoggedIn(): Boolean {
-        val sharedPreference = getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
-        return sharedPreference.getBoolean("is_logged_in", false)
+        val sharedPreference = getSharedPreferences(PreferencesKeys.USER_PREFS, android.content.Context.MODE_PRIVATE)
+        return sharedPreference.getBoolean(PreferencesKeys.IS_LOGGED_IN, false)
     }
 }
